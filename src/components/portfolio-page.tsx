@@ -250,7 +250,7 @@ export function PortfolioPage() {
     const steps = document.querySelectorAll<HTMLElement>("[data-process-step]");
     const observer = new IntersectionObserver(
       (entries) => entries.forEach((entry) => {
-        if (entry.isIntersecting) setActiveStep(Number((entry.target as HTMLElement).dataset.processStep ?? 0));
+        if (entry.isIntersecting) setActiveStep(Number((entry.target as HTMLElement).dataset["processStep"] ?? 0));
       }),
       { rootMargin: "-35% 0px -45%", threshold: 0 },
     );
@@ -259,6 +259,8 @@ export function PortfolioPage() {
   }, [language]);
 
   const mailSubject = useMemo(() => language === "cz" ? "Nová poptávka webu" : "New website enquiry", [language]);
+  const activeProject = selectedProject === null ? null : t.projects[selectedProject];
+  const activeProjectImage = selectedProject === null ? null : projectImages[selectedProject];
 
   const scrollToContact = () => {
     setMenuOpen(false);
@@ -274,9 +276,9 @@ export function PortfolioPage() {
       if (!String(data.get(field) ?? "").trim()) nextErrors[field] = t.form.required;
     });
     const email = String(data.get("email") ?? "").trim();
-    if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) nextErrors.email = t.form.invalidEmail;
+    if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) nextErrors["email"] = t.form.invalidEmail;
     const website = String(data.get("website") ?? "").trim();
-    if (website && !/^https?:\/\/.+/i.test(website)) nextErrors.website = t.form.invalidUrl;
+    if (website && !/^https?:\/\/.+/i.test(website)) nextErrors["website"] = t.form.invalidUrl;
     setErrors(nextErrors);
     if (Object.keys(nextErrors).length > 0) return;
 
@@ -363,7 +365,7 @@ export function PortfolioPage() {
           <SectionHeading tag={t.whyTag} title={t.whyTitle} />
           <div className="mt-14 grid gap-px overflow-hidden rounded-lg border border-border bg-border md:grid-cols-2 xl:grid-cols-4">
             {t.benefits.map(([title, description], index) => {
-              const Icon = benefitIcons[index];
+              const Icon = benefitIcons[index] ?? Target;
               return <article key={title} className="benefit-card reveal"><span className="icon-tile"><Icon /></span><span className="card-index">0{index + 1}</span><h3>{title}</h3><p>{description}</p></article>;
             })}
           </div>
@@ -375,7 +377,7 @@ export function PortfolioPage() {
           <SectionHeading tag={t.servicesTag} title={t.servicesTitle} light />
           <div className="mt-14 border-t border-primary-foreground/20">
             {t.services.map(([title, description], index) => {
-              const Icon = serviceIcons[index];
+              const Icon = serviceIcons[index] ?? MonitorSmartphone;
               return <article key={title} className="service-row reveal"><span className="service-number">0{index + 1}</span><Icon className="service-icon" /><h3>{title}</h3><p>{description}</p><ArrowUpRight className="service-arrow" /></article>;
             })}
           </div>
@@ -490,12 +492,12 @@ export function PortfolioPage() {
               </div>
             ) : (
               <form onSubmit={submitForm} noValidate className="grid gap-6 sm:grid-cols-2">
-                <Field label={t.form.name} name="name" required error={errors.name} />
-                <Field label={t.form.email} name="email" type="email" required error={errors.email} />
+                <Field label={t.form.name} name="name" required error={errors["name"]} />
+                <Field label={t.form.email} name="email" type="email" required error={errors["email"]} />
                 <Field label={t.form.phone} name="phone" type="tel" />
-                <Field label={t.form.industry} name="industry" required error={errors.industry} />
-                <Field label={t.form.website} name="website" type="url" error={errors.website} className="sm:col-span-2" placeholder="https://" />
-                <label className="form-field sm:col-span-2"><span>{t.form.brief} *</span><textarea name="brief" rows={5} aria-invalid={Boolean(errors.brief)} />{errors.brief && <small>{errors.brief}</small>}</label>
+                <Field label={t.form.industry} name="industry" required error={errors["industry"]} />
+                <Field label={t.form.website} name="website" type="url" error={errors["website"]} className="sm:col-span-2" placeholder="https://" />
+                <label className="form-field sm:col-span-2"><span>{t.form.brief} *</span><textarea name="brief" rows={5} aria-invalid={Boolean(errors["brief"])} />{errors["brief"] && <small>{errors["brief"]}</small>}</label>
                 <label className="file-field sm:col-span-2"><Paperclip /><span><strong>{t.form.file}</strong><small>{t.form.fileHint}</small></span><input type="file" name="file" accept=".pdf,.doc,.docx,.png,.jpg,.jpeg" /></label>
                 <div className="sm:col-span-2"><Button type="submit" className="h-14 w-full rounded-full bg-primary-foreground text-base text-primary hover:bg-primary-foreground/90">{t.form.submit}<ArrowUpRight /></Button></div>
               </form>
@@ -512,13 +514,13 @@ export function PortfolioPage() {
       </footer>
 
       <Dialog open={selectedProject !== null} onOpenChange={(open) => !open && setSelectedProject(null)}>
-        {selectedProject !== null && (
+        {activeProject && activeProjectImage && (
           <DialogContent className="max-h-[92vh] max-w-5xl overflow-y-auto border-0 p-0">
-            <img src={projectImages[selectedProject]} alt={t.projects[selectedProject].title} className="aspect-[7/4] w-full object-cover" width={1408} height={1008} />
+            <img src={activeProjectImage} alt={activeProject.title} className="aspect-[7/4] w-full object-cover" width={1408} height={1008} />
             <DialogHeader className="p-7 pr-12 md:p-10 md:pr-14">
               <p className="eyebrow">{t.caseLabel}</p>
-              <DialogTitle className="mt-3 text-left text-3xl md:text-5xl">{t.projects[selectedProject].title}</DialogTitle>
-              <DialogDescription className="pt-4 text-left text-base leading-relaxed md:text-lg">{t.projects[selectedProject].long}</DialogDescription>
+              <DialogTitle className="mt-3 text-left text-3xl md:text-5xl">{activeProject.title}</DialogTitle>
+              <DialogDescription className="pt-4 text-left text-base leading-relaxed md:text-lg">{activeProject.long}</DialogDescription>
             </DialogHeader>
           </DialogContent>
         )}
@@ -527,6 +529,6 @@ export function PortfolioPage() {
   );
 }
 
-function Field({ label, name, type = "text", required, error, className = "", placeholder }: { label: string; name: string; type?: string; required?: boolean; error?: string; className?: string; placeholder?: string }) {
+function Field({ label, name, type = "text", required, error, className = "", placeholder }: { label: string; name: string; type?: string; required?: boolean; error?: string | undefined; className?: string; placeholder?: string }) {
   return <label className={`form-field ${className}`}><span>{label}{required ? " *" : ""}</span><input name={name} type={type} aria-invalid={Boolean(error)} placeholder={placeholder} />{error && <small>{error}</small>}</label>;
 }
