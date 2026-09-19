@@ -112,7 +112,7 @@ const copy = {
     aboutTag: "O mně",
     aboutTitle: "Designuji moderně. Přemýšlím prakticky.",
     aboutText:
-      "Jsem Jankech, AI web designer. Propojuji cit pro čistý design s novými technologiemi a důrazem na výsledky. Malým lokálním firmám pomáhám působit profesionálně, být lépe vidět a získávat kvalitnější poptávky — bez zbytečné složitosti.",
+      "Jsem Jankech mladý 15letý student který se ve svém volném času věnuje AI web designu. Pomáhám lokáním firmám jejich byznys zviditelnit nebo zautomatizovat. Každý projekt řeším individuálně a unikátně. Zakládám si na přátelském a férovém přístupu. Vše vám rád jednoduše vysvětlím a společně najdeme řešení, které bude dávat smysl pro váš byznys.",
     aboutPoints: ["Strategie před efektem", "Moderní technologie", "Osobní spolupráce"],
     contactTag: "Pojďme začít",
     contactTitle: "Máte projekt v hlavě? Pojďme mu dát tvar.",
