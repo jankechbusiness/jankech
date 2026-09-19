@@ -511,7 +511,7 @@ export function PortfolioPage() {
                 <h3>{t.form.successTitle}</h3>
                 <p>{t.form.success}</p>
                 <p className="success-note">{t.form.successNote}</p>
-                <Button type="button" variant="outline" onClick={() => setSubmitted(false)} className="mt-7 rounded-full border-primary-foreground/30 bg-transparent text-primary-foreground hover:bg-primary-foreground hover:text-primary">{language === "cz" ? "Odeslat další" : "Send another"}</Button>
+                <Button type="button" onClick={() => setSubmitted(false)} className="mt-7 h-12 rounded-full bg-primary px-7 text-base text-primary-foreground hover:bg-primary/90">{language === "cz" ? "Odeslat další" : "Send another"}</Button>
               </div>
             ) : (
               <form onSubmit={submitForm} noValidate className="grid gap-6 sm:grid-cols-2">
