@@ -123,7 +123,7 @@ const copy = {
       phone: "Telefon",
       industry: "Obor firmy",
       brief: "Co potřebujete?",
-      website: "Odkaz na současný web",
+      website: "ODKAZ NA SOUČASNÝ WEB (POKUD NĚJÁKÝ MÁTE)",
       file: "Přiložit soubor",
       fileHint: "PDF, DOCX, PNG nebo JPG do 10 MB",
       submit: "Odeslat poptávku",
