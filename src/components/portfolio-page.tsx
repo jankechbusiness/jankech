@@ -46,7 +46,7 @@ const copy = {
     cta: "Nezávazně poptat web",
     eyebrow: "AI web design pro lokální firmy",
     heroTitle: "Z návštěv na poptávky.",
-    heroText: "Jsem Jankech mladý AI Web Designer. Pomáhám malým lokálním firmám působit profesionálně, být lépe vidět a získávat kvalitnější poptávky",
+    heroText: "Jsem Jankech, mladý AI web designer. Pomáhám malým lokálním firmám působit profesionálně, být lépe vidět a získávat kvalitnější poptávky.",
     scroll: "Objevte, jak spolupráce funguje",
     introTag: "Web, který má smysl",
     introTitle: "Nestačí jen dobře vypadat.",
