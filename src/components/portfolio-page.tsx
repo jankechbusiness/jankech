@@ -51,7 +51,7 @@ const copy = {
     introTag: "Web, který má smysl",
     introTitle: "Nestačí jen dobře vypadat.",
     introText:
-      "Váš web má během několika vteřin vzbudit důvěru, srozumitelně ukázat hodnotu vaší firmy a dovést návštěvníka ke kontaktu. Přesně takové weby tvořím.",
+      "Váš web má během několika vteřin vzbudit důvěru, srozumitelně ukázat hodnotu vaší firmy a dovést návštěvníka ke kontaktu. ",
     whyTag: "Proč spolupracovat",
     whyTitle: "Méně překážek. Více výsledků.",
     benefits: [
