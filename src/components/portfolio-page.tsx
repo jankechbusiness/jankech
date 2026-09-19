@@ -113,7 +113,7 @@ const copy = {
     aboutTitle: "Designuji moderně. Přemýšlím prakticky.",
     aboutText:
       "Jsem Jankech mladý 15letý student který se ve svém volném času věnuje AI web designu. Pomáhám lokáním firmám jejich byznys zviditelnit nebo zautomatizovat. Každý projekt řeším individuálně a unikátně. Zakládám si na přátelském a férovém přístupu. Vše vám rád jednoduše vysvětlím a společně najdeme řešení, které bude dávat smysl pro váš byznys.",
-    aboutPoints: ["Individuální přístup", "Moderní řešení", "Osobní spolupráce"],
+    aboutPoints: ["Individuální přístup", "Moderní řešení", "Důraz na detail"],
     contactTag: "Pojďme začít",
     contactTitle: "Máte projekt v hlavě? Pojďme mu dát tvar.",
     contactText: "Popište mi stručně, co potřebujete. Ozvu se a navrhnu nejvhodnější další krok.",
