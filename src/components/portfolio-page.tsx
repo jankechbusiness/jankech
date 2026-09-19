@@ -29,7 +29,6 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import logoAsset from "@/assets/jankech-web-logo.png.asset.json";
-import heroImage from "@/assets/jankech-hero.jpg";
 import stylistImage from "@/assets/project-stylist.jpg";
 import painterImage from "@/assets/project-painter.jpg";
 
@@ -217,11 +216,24 @@ const benefitIcons = [Target, Sparkles, Zap, Search];
 const serviceIcons = [MonitorSmartphone, Search, Wrench, Bot, Globe2];
 const projectImages = [stylistImage, painterImage];
 
-function SectionHeading({ tag, title, light = false }: { tag: string; title: string; light?: boolean }) {
+function SectionHeading({ tag, title }: { tag: string; title: string }) {
   return (
     <div className="section-heading reveal">
-      <p className={light ? "eyebrow eyebrow-light" : "eyebrow"}>{tag}</p>
-      <h2 className={light ? "section-title text-primary-foreground" : "section-title"}>{title}</h2>
+      <p className="eyebrow">{tag}</p>
+      <h2 className="section-title">{title}</h2>
+    </div>
+  );
+}
+
+function OrganicBackground() {
+  return (
+    <div className="organic-background" aria-hidden="true">
+      <svg viewBox="0 0 1440 900" preserveAspectRatio="none">
+        <path d="M-180 175 C180 10 330 360 690 188 C1030 28 1190 315 1620 95" />
+        <path d="M-200 360 C170 155 420 520 760 322 C1090 132 1310 505 1640 270" />
+        <path d="M-190 590 C190 350 430 740 820 510 C1120 330 1360 705 1630 480" />
+        <path d="M-170 790 C210 565 505 930 860 720 C1190 525 1400 880 1620 690" />
+      </svg>
     </div>
   );
 }
@@ -232,6 +244,7 @@ export function PortfolioPage() {
   const [selectedProject, setSelectedProject] = useState<number | null>(null);
   const [activeStep, setActiveStep] = useState(0);
   const [submitted, setSubmitted] = useState(false);
+  const [transitioning, setTransitioning] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const t = copy[language];
 
@@ -262,10 +275,21 @@ export function PortfolioPage() {
   const activeProject = selectedProject === null ? null : t.projects[selectedProject];
   const activeProjectImage = selectedProject === null ? null : projectImages[selectedProject];
 
-  const scrollToContact = () => {
-    setMenuOpen(false);
-    document.getElementById("contact")?.scrollIntoView({ behavior: "smooth" });
+  const runLogoTransition = (action: () => void) => {
+    if (transitioning) return;
+    setTransitioning(true);
+    window.setTimeout(() => {
+      action();
+      window.setTimeout(() => setTransitioning(false), 320);
+    }, 360);
   };
+
+  const scrollTo = (id: string) => {
+    setMenuOpen(false);
+    runLogoTransition(() => document.getElementById(id)?.scrollIntoView({ behavior: "smooth" }));
+  };
+
+  const scrollToContact = () => scrollTo("contact");
 
   const submitForm = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -295,19 +319,25 @@ export function PortfolioPage() {
       `${t.form.file}: ${(data.get("file") as File | null)?.name || "—"}`,
     ].join("\n");
     setSubmitted(true);
-    window.location.href = `mailto:jankechbusiness@gmail.com?subject=${encodeURIComponent(mailSubject)}&body=${encodeURIComponent(body)}`;
+    runLogoTransition(() => {
+      window.location.href = `mailto:jankechbusiness@gmail.com?subject=${encodeURIComponent(mailSubject)}&body=${encodeURIComponent(body)}`;
+    });
   };
 
   return (
-    <main className="overflow-hidden bg-background text-foreground">
+    <main className="relative isolate overflow-hidden bg-background text-foreground">
+      <OrganicBackground />
+      <div className={`logo-transition ${transitioning ? "is-active" : ""}`} aria-hidden={!transitioning}>
+        <img src={logoAsset.url} alt="" width={120} height={120} />
+      </div>
       <header className="fixed inset-x-0 top-0 z-40 border-b border-border/60 bg-background/90 backdrop-blur-xl">
         <div className="site-container grid h-20 grid-cols-[minmax(0,1fr)_auto] items-center gap-4 lg:grid-cols-[auto_1fr_auto]">
-          <a href="#top" className="flex min-w-0 items-center gap-3" aria-label="Jankech Web">
+          <a href="#top" onClick={(event) => { event.preventDefault(); scrollTo("top"); }} className="flex min-w-0 items-center gap-3" aria-label="Jankech Web">
             <img src={logoAsset.url} alt="" className="h-11 w-11 shrink-0 rounded-full object-cover" width={44} height={44} />
             <span className="truncate text-base font-bold">Jankech <span className="text-primary">Web</span></span>
           </a>
           <nav className="hidden items-center justify-center gap-7 lg:flex" aria-label="Primary navigation">
-            {t.nav.map(([label, id]) => <a key={id} href={`#${id}`} className="nav-link">{label}</a>)}
+            {t.nav.map(([label, id]) => <a key={id} href={`#${id}`} onClick={(event) => { event.preventDefault(); scrollTo(id); }} className="nav-link">{label}</a>)}
           </nav>
           <div className="flex shrink-0 items-center gap-2">
             <div className="language-switch" aria-label="Language">
@@ -322,7 +352,7 @@ export function PortfolioPage() {
         {menuOpen && (
           <div className="border-t border-border bg-background px-5 py-6 lg:hidden">
             <nav className="flex flex-col gap-1">
-              {t.nav.map(([label, id]) => <a key={id} href={`#${id}`} onClick={() => setMenuOpen(false)} className="mobile-nav-link">{label}<ChevronRight /></a>)}
+              {t.nav.map(([label, id]) => <a key={id} href={`#${id}`} onClick={(event) => { event.preventDefault(); scrollTo(id); }} className="mobile-nav-link">{label}<ChevronRight /></a>)}
               <Button onClick={scrollToContact} className="mt-4 h-12 rounded-full">{t.cta}<ArrowDownRight /></Button>
             </nav>
           </div>
@@ -330,27 +360,21 @@ export function PortfolioPage() {
       </header>
 
       <section id="top" className="hero-section">
-        <div className="hero-grid-bg" aria-hidden="true" />
-        <div className="site-container grid min-h-[min(900px,100svh)] items-center gap-12 pb-16 pt-32 lg:grid-cols-[1.05fr_.95fr] lg:gap-10 lg:pt-24">
-          <div className="relative z-10 max-w-3xl">
+        <div className="site-container flex min-h-[min(900px,100svh)] items-center justify-center pb-20 pt-32 text-center">
+          <div className="relative z-10 mx-auto max-w-5xl">
             <p className="eyebrow mb-7">{t.eyebrow}</p>
-            <h1 className="hero-title">{t.heroTitle}</h1>
-            <p className="mt-7 max-w-2xl text-lg leading-relaxed text-muted-foreground md:text-xl">{t.heroText}</p>
-            <div className="mt-9 flex flex-wrap items-center gap-5">
+            <h1 className="hero-title mx-auto">{t.heroTitle}</h1>
+            <p className="mx-auto mt-7 max-w-2xl text-lg leading-relaxed text-muted-foreground md:text-xl">{t.heroText}</p>
+            <div className="mt-9 flex flex-wrap items-center justify-center gap-5">
               <Button onClick={scrollToContact} size="lg" className="h-14 rounded-full px-7 text-base">{t.cta}<ArrowDownRight /></Button>
-              <a href="#projects" className="text-link">{language === "cz" ? "Prohlédnout projekty" : "View projects"}<ArrowUpRight /></a>
+              <a href="#projects" onClick={(event) => { event.preventDefault(); scrollTo("projects"); }} className="text-link">{language === "cz" ? "Prohlédnout projekty" : "View projects"}<ArrowUpRight /></a>
             </div>
           </div>
-          <div className="hero-visual-wrap reveal">
-            <div className="hero-number">01</div>
-            <img src={heroImage} alt={language === "cz" ? "Abstraktní modrá prostorová kompozice" : "Abstract blue spatial composition"} className="hero-visual" width={1600} height={1200} />
-            <div className="hero-orbit" aria-hidden="true" />
-          </div>
         </div>
-        <a href="#intro" className="scroll-cue"><span>{t.scroll}</span><ArrowDownRight /></a>
+        <a href="#intro" onClick={(event) => { event.preventDefault(); scrollTo("intro"); }} className="scroll-cue"><span>{t.scroll}</span><ArrowDownRight /></a>
       </section>
 
-      <section id="intro" className="section-pad border-y border-border bg-secondary/45">
+      <section id="intro" className="section-pad border-y border-border">
         <div className="site-container grid gap-10 lg:grid-cols-[.7fr_1.3fr] lg:items-start">
           <p className="eyebrow reveal">{t.introTag}</p>
           <div className="reveal">
@@ -372,10 +396,10 @@ export function PortfolioPage() {
         </div>
       </section>
 
-      <section id="services" className="section-pad bg-foreground text-primary-foreground">
+      <section id="services" className="section-pad">
         <div className="site-container">
-          <SectionHeading tag={t.servicesTag} title={t.servicesTitle} light />
-          <div className="mt-14 border-t border-primary-foreground/20">
+          <SectionHeading tag={t.servicesTag} title={t.servicesTitle} />
+          <div className="mt-14 border-t border-border">
             {t.services.map(([title, description], index) => {
               const Icon = serviceIcons[index] ?? MonitorSmartphone;
               return <article key={title} className="service-row reveal"><span className="service-number">0{index + 1}</span><Icon className="service-icon" /><h3>{title}</h3><p>{description}</p><ArrowUpRight className="service-arrow" /></article>;
@@ -408,7 +432,7 @@ export function PortfolioPage() {
 
       <section id="process" className="process-section">
         <div className="site-container relative z-10">
-          <SectionHeading tag={t.processTag} title={t.processTitle} light />
+          <SectionHeading tag={t.processTag} title={t.processTitle} />
           <div className={`process-line process-line-${activeStep}`} aria-hidden="true">
             <svg viewBox="0 0 900 1500" preserveAspectRatio="none"><path d="M110 20 C720 100 760 280 190 340 C-70 370 40 620 620 610 C1010 605 920 880 300 930 C-50 960 100 1210 700 1190 C900 1185 900 1380 500 1470" /></svg>
           </div>
@@ -440,7 +464,7 @@ export function PortfolioPage() {
         </div>
       </section>
 
-      <section className="section-pad border-y border-border bg-secondary/45">
+      <section className="section-pad border-y border-border">
         <div className="site-container">
           <SectionHeading tag={t.refsTag} title={t.refsTitle} />
           <div className="mt-14 grid gap-5 lg:grid-cols-3">
@@ -470,14 +494,14 @@ export function PortfolioPage() {
         </div>
       </section>
 
-      <section id="contact" className="section-pad bg-primary text-primary-foreground">
+      <section id="contact" className="section-pad border-t border-border">
         <div className="site-container grid gap-14 lg:grid-cols-[.8fr_1.2fr]">
           <div className="reveal lg:sticky lg:top-32 lg:self-start">
-            <p className="eyebrow eyebrow-light">{t.contactTag}</p>
+            <p className="eyebrow">{t.contactTag}</p>
             <h2 className="mt-6 text-4xl font-bold leading-tight md:text-6xl">{t.contactTitle}</h2>
-            <p className="mt-6 max-w-xl text-lg leading-relaxed text-primary-foreground/75">{t.contactText}</p>
+            <p className="mt-6 max-w-xl text-lg leading-relaxed text-muted-foreground">{t.contactText}</p>
             <div className="mt-10 space-y-4">
-              <a href="mailto:jankechbusiness@gmail.com" className="contact-link"><MessageSquareMore />jankechbusiness@gmail.com</a>
+              <a href="mailto:jankechbusiness@gmail.com" onClick={(event) => { event.preventDefault(); runLogoTransition(() => { window.location.href = "mailto:jankechbusiness@gmail.com"; }); }} className="contact-link"><MessageSquareMore />jankechbusiness@gmail.com</a>
               <a href="tel:+420608543556" className="contact-link"><BriefcaseBusiness />+420 608 543 556</a>
             </div>
           </div>
@@ -506,10 +530,10 @@ export function PortfolioPage() {
         </div>
       </section>
 
-      <footer className="bg-foreground py-10 text-primary-foreground">
+      <footer className="border-t border-border py-10">
         <div className="site-container grid grid-cols-[minmax(0,1fr)_auto] items-end gap-8">
-          <div><div className="flex items-center gap-3"><img src={logoAsset.url} alt="" className="h-10 w-10 rounded-full" width={40} height={40} /><span className="font-bold">Jankech Web</span></div><p className="mt-4 text-sm text-primary-foreground/60">{t.footerText}</p></div>
-          <p className="text-right text-xs text-primary-foreground/45">© 2026 Jankech Web<br />{t.rights}</p>
+          <div><div className="flex items-center gap-3"><img src={logoAsset.url} alt="" className="h-10 w-10 rounded-full" width={40} height={40} /><span className="font-bold">Jankech Web</span></div><p className="mt-4 text-sm text-muted-foreground">{t.footerText}</p></div>
+          <p className="text-right text-xs text-muted-foreground">© 2026 Jankech Web<br />{t.rights}</p>
         </div>
       </footer>
 

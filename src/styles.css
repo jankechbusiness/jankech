@@ -162,8 +162,7 @@
 @utility language-switch { display: flex; align-items: center; gap: .1rem; border: 1px solid var(--border); border-radius: 999px; padding: .15rem; }
 @utility language-active { border-radius: 999px; background: var(--foreground); color: var(--background); &:hover { background: var(--foreground); color: var(--background); } }
 @utility language-idle { border-radius: 999px; color: var(--muted-foreground); }
-@utility hero-section { position: relative; min-height: 100svh; overflow: hidden; }
-@utility hero-grid-bg { position: absolute; inset: 0; opacity: .45; background-image: linear-gradient(var(--border) 1px, transparent 1px), linear-gradient(90deg, var(--border) 1px, transparent 1px); background-size: 60px 60px; mask-image: linear-gradient(to bottom, black, transparent 80%); }
+@utility hero-section { position: relative; z-index: 1; min-height: 100svh; overflow: hidden; }
 @utility hero-title { max-width: 48rem; font-size: clamp(4rem, 9.5vw, 8.6rem); line-height: .86; font-weight: 800; }
 @utility hero-visual-wrap { position: relative; justify-self: center; width: min(100%, 38rem); }
 @utility hero-visual { position: relative; z-index: 1; aspect-ratio: 1/1; width: 100%; border-radius: 50%; object-fit: cover; box-shadow: 0 40px 90px color-mix(in oklab, var(--primary) 22%, transparent); }
@@ -174,16 +173,16 @@
 @utility benefit-card { position: relative; min-height: 21rem; background: var(--background); padding: 2rem; transition: transform .3s ease, background .3s ease; &:hover { z-index: 2; transform: translateY(-6px); background: var(--secondary); } & h3 { margin-top: 3.5rem; font-size: 1.3rem; font-weight: 700; } & p { margin-top: .8rem; color: var(--muted-foreground); line-height: 1.65; font-size: .92rem; } }
 @utility icon-tile { display: grid; width: 3rem; height: 3rem; place-items: center; border-radius: 50%; background: color-mix(in oklab, var(--primary) 10%, var(--background)); color: var(--primary); & svg { width: 1.25rem; } }
 @utility card-index { position: absolute; right: 1.5rem; top: 1.7rem; font-size: .68rem; font-weight: 800; color: var(--muted-foreground); }
-@utility service-row { display: grid; grid-template-columns: auto auto minmax(0,1fr) auto; align-items: center; gap: 1.25rem; border-bottom: 1px solid color-mix(in oklab, var(--primary-foreground) 20%, transparent); padding-block: 1.8rem; transition: padding .3s ease, color .3s ease; &:hover { color: color-mix(in oklab, var(--primary) 70%, white); padding-inline: .75rem; } & h3 { font-size: clamp(1.25rem, 2.5vw, 2rem); font-weight: 700; } & p { display: none; max-width: 24rem; color: color-mix(in oklab, var(--primary-foreground) 62%, transparent); font-size: .9rem; line-height: 1.5; @media (min-width: 768px) { display: block; } } }
+@utility service-row { display: grid; grid-template-columns: auto auto minmax(0,1fr) auto; align-items: center; gap: 1.25rem; border-bottom: 1px solid var(--border); padding-block: 1.8rem; transition: padding .3s ease, color .3s ease; &:hover { color: var(--primary); padding-inline: .75rem; } & h3 { font-size: clamp(1.25rem, 2.5vw, 2rem); font-weight: 700; } & p { display: none; max-width: 24rem; color: var(--muted-foreground); font-size: .9rem; line-height: 1.5; @media (min-width: 768px) { display: block; } } }
 @utility service-number { font-size: .65rem; font-weight: 800; opacity: .45; }
 @utility service-icon { width: 1.25rem; }
 @utility service-arrow { width: 1.25rem; }
 @utility project-image-button { position: relative; display: block; width: 100%; overflow: hidden; border-radius: var(--radius); text-align: left; cursor: pointer; }
 @utility project-image { aspect-ratio: 7/5; width: 100%; object-fit: cover; transition: transform .7s cubic-bezier(.2,.8,.2,1); .project-card:hover & { transform: scale(1.035); } }
 @utility project-badge { position: absolute; left: 1rem; top: 1rem; border-radius: 999px; background: color-mix(in oklab, var(--background) 90%, transparent); padding: .5rem .75rem; font-size: .62rem; font-weight: 800; text-transform: uppercase; backdrop-filter: blur(10px); }
-@utility process-section { position: relative; overflow: hidden; background: var(--foreground); color: var(--primary-foreground); padding-block: clamp(6rem, 11vw, 10rem); }
+@utility process-section { position: relative; z-index: 1; overflow: hidden; padding-block: clamp(6rem, 11vw, 10rem); }
 @utility process-line { position: absolute; left: 50%; top: 18rem; bottom: 6rem; width: min(90%, 60rem); transform: translateX(-50%); color: color-mix(in oklab, var(--primary) 65%, transparent); opacity: .72; & svg { width: 100%; height: 100%; overflow: visible; } & path { fill: none; stroke: currentColor; stroke-width: 7; stroke-linecap: round; stroke-dasharray: 1; stroke-dashoffset: 1; animation: drawline 2.2s ease forwards; } }
-@utility process-step { position: relative; z-index: 2; max-width: 30rem; border-left: 2px solid color-mix(in oklab, var(--primary-foreground) 18%, transparent); padding: 1.5rem 1.5rem 1.5rem 2rem; opacity: .42; transition: opacity .4s ease, border-color .4s ease, transform .4s ease; &.active { opacity: 1; border-color: var(--primary); transform: translateX(.5rem); } & h3 { margin-top: .8rem; font-size: clamp(2rem, 4vw, 3.7rem); line-height: 1.02; font-weight: 700; } & p { margin-top: 1rem; max-width: 26rem; color: color-mix(in oklab, var(--primary-foreground) 68%, transparent); line-height: 1.65; } }
+@utility process-step { position: relative; z-index: 2; max-width: 30rem; border-left: 2px solid var(--border); padding: 1.5rem 1.5rem 1.5rem 2rem; opacity: .42; transition: opacity .4s ease, border-color .4s ease, transform .4s ease; &.active { opacity: 1; border-color: var(--primary); transform: translateX(.5rem); } & h3 { margin-top: .8rem; font-size: clamp(2rem, 4vw, 3.7rem); line-height: 1.02; font-weight: 700; } & p { margin-top: 1rem; max-width: 26rem; color: var(--muted-foreground); line-height: 1.65; } }
 @utility process-index { font-size: .72rem; font-weight: 800; color: color-mix(in oklab, var(--primary) 70%, white); }
 @utility pricing-panel { display: grid; gap: 3rem; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); padding-block: 3.5rem; @media (min-width: 1024px) { grid-template-columns: 1.2fr .8fr; align-items: end; } }
 @utility pricing-side { @media (min-width: 1024px) { border-left: 1px solid var(--border); padding-left: 3rem; } & > p:last-of-type { margin-top: 1.25rem; color: var(--muted-foreground); line-height: 1.6; } }
@@ -198,9 +197,9 @@
 @utility about-mark { display: grid; aspect-ratio: 1/1; place-items: center; overflow: hidden; border-radius: 50%; background: var(--secondary); & img { width: 82%; height: 82%; border-radius: 50%; object-fit: cover; mix-blend-mode: multiply; } }
 @utility about-pill { display: inline-flex; align-items: center; gap: .5rem; border: 1px solid var(--border); border-radius: 999px; padding: .65rem .9rem; font-size: .78rem; font-weight: 700; & svg { width: .9rem; color: var(--primary); } }
 @utility contact-link { display: flex; align-items: center; gap: .8rem; width: fit-content; font-size: clamp(.9rem, 2vw, 1.1rem); font-weight: 700; & svg { width: 1.1rem; } }
-@utility contact-form-wrap { border: 1px solid color-mix(in oklab, var(--primary-foreground) 24%, transparent); border-radius: var(--radius); background: color-mix(in oklab, var(--foreground) 18%, transparent); padding: clamp(1.4rem, 4vw, 3rem); }
-@utility form-field { display: flex; flex-direction: column; gap: .6rem; & > span { font-size: .72rem; font-weight: 800; text-transform: uppercase; } & input, & textarea { width: 100%; border: 1px solid color-mix(in oklab, var(--primary-foreground) 30%, transparent); border-radius: .25rem; background: color-mix(in oklab, var(--background) 8%, transparent); padding: .9rem 1rem; color: var(--primary-foreground); outline: none; transition: border-color .2s, background .2s; &:focus { border-color: var(--primary-foreground); background: color-mix(in oklab, var(--background) 12%, transparent); } &[aria-invalid="true"] { border-color: var(--destructive); } } & small { color: color-mix(in oklab, var(--destructive) 50%, white); } }
-@utility file-field { display: flex; cursor: pointer; align-items: center; gap: 1rem; border: 1px dashed color-mix(in oklab, var(--primary-foreground) 40%, transparent); padding: 1rem; transition: background .2s; &:hover { background: color-mix(in oklab, var(--background) 8%, transparent); } & > svg { width: 1.25rem; } & span { display: flex; flex: 1; flex-direction: column; } & strong { font-size: .8rem; } & small { margin-top: .2rem; color: color-mix(in oklab, var(--primary-foreground) 62%, transparent); } & input { width: min(12rem, 40%); font-size: .7rem; } }
+@utility contact-form-wrap { border: 1px solid var(--border); border-radius: var(--radius); background: color-mix(in oklab, var(--background) 82%, transparent); padding: clamp(1.4rem, 4vw, 3rem); backdrop-filter: blur(14px); }
+@utility form-field { display: flex; flex-direction: column; gap: .6rem; & > span { font-size: .72rem; font-weight: 800; text-transform: uppercase; } & input, & textarea { width: 100%; border: 1px solid var(--input); border-radius: .25rem; background: color-mix(in oklab, var(--background) 88%, transparent); padding: .9rem 1rem; color: var(--foreground); outline: none; transition: border-color .2s, background .2s; &:focus { border-color: var(--primary); background: var(--background); } &[aria-invalid="true"] { border-color: var(--destructive); } } & small { color: var(--destructive); } }
+@utility file-field { display: flex; cursor: pointer; align-items: center; gap: 1rem; border: 1px dashed var(--input); padding: 1rem; transition: background .2s; &:hover { background: var(--secondary); } & > svg { width: 1.25rem; } & span { display: flex; flex: 1; flex-direction: column; } & strong { font-size: .8rem; } & small { margin-top: .2rem; color: var(--muted-foreground); } & input { width: min(12rem, 40%); font-size: .7rem; } }
 @utility success-state { display: flex; min-height: 32rem; flex-direction: column; align-items: center; justify-content: center; text-align: center; & h3 { margin-top: 1.5rem; font-size: 2.2rem; font-weight: 700; } & > p { margin-top: .5rem; font-size: 1.15rem; } }
 @utility success-icon { display: grid; width: 4.5rem; height: 4.5rem; place-items: center; border-radius: 50%; background: var(--primary-foreground); color: var(--primary); & svg { width: 2rem; } }
 @utility success-note { max-width: 31rem; padding-top: 1.25rem; color: color-mix(in oklab, var(--primary-foreground) 66%, transparent); font-size: .85rem !important; line-height: 1.6; }
@@ -208,8 +207,25 @@
 .reveal { opacity: 0; transform: translateY(24px); transition: opacity .7s ease, transform .7s ease; }
 .reveal.is-visible { opacity: 1; transform: translateY(0); }
 
+main > section, main > footer { position: relative; z-index: 1; }
+
+.organic-background { position: fixed; inset: 0; z-index: -1; overflow: hidden; background: var(--background); pointer-events: none; }
+.organic-background svg { width: 115%; height: 115%; color: color-mix(in oklab, var(--primary) 20%, transparent); filter: blur(.2px); animation: organic-drift 13s ease-in-out infinite alternate; }
+.organic-background path { fill: none; stroke: currentColor; stroke-width: 1.35; vector-effect: non-scaling-stroke; stroke-dasharray: 12 8; animation: organic-flow 10s linear infinite; }
+.organic-background path:nth-child(2) { opacity: .7; animation-duration: 14s; animation-direction: reverse; }
+.organic-background path:nth-child(3) { opacity: .48; animation-duration: 17s; }
+.organic-background path:nth-child(4) { opacity: .62; animation-duration: 12s; animation-direction: reverse; }
+
+.logo-transition { position: fixed; inset: 0; z-index: 100; display: grid; place-items: center; visibility: hidden; background: var(--background); opacity: 0; pointer-events: none; transition: opacity .22s ease, visibility 0s linear .45s; }
+.logo-transition.is-active { visibility: visible; opacity: 1; transition: opacity .18s ease; }
+.logo-transition img { width: 6.5rem; height: 6.5rem; border-radius: 50%; object-fit: cover; transform: scale(.78); opacity: 0; }
+.logo-transition.is-active img { animation: logo-redirect .65s cubic-bezier(.2,.8,.2,1) both; }
+
 @keyframes orbit { to { transform: rotate(360deg); } }
 @keyframes drawline { to { stroke-dashoffset: 0; } }
+@keyframes organic-flow { to { stroke-dashoffset: -160; } }
+@keyframes organic-drift { from { transform: translate3d(-3%, -2%, 0) scale(1.04); } to { transform: translate3d(2%, 3%, 0) scale(1.1); } }
+@keyframes logo-redirect { 0% { transform: scale(.72); opacity: 0; } 42% { transform: scale(1); opacity: 1; } 75% { transform: scale(1); opacity: 1; } 100% { transform: scale(1.08); opacity: 0; } }
 
 @media (max-width: 767px) {
   .site-container { width: min(100% - 2rem, 82rem); }
