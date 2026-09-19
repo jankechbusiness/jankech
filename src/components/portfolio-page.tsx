@@ -70,7 +70,7 @@ const copy = {
       ["Google Business Profile", "Vyladěný firemní profil pro lepší lokální dosah a důvěryhodnost."],
     ],
     projectsTag: "Vybrané projekty",
-     projectsTitle: "Design, který pracuje za vás.",
+     projectsTitle: "Design, který upoutá pozornost.",
     projects: [
       {
         title: "Web pro osobní stylistku",
