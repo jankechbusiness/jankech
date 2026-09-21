@@ -123,8 +123,6 @@ const copy = {
       industry: "Obor firmy",
       brief: "Co potřebujete?",
       website: "ODKAZ NA SOUČASNÝ WEB (POKUD NĚJÁKÝ MÁTE)",
-      file: "Přiložit soubor",
-      fileHint: "PDF, DOCX, PNG nebo JPG do 10 MB",
       submit: "Odeslat poptávku",
       required: "Vyplňte prosím toto pole.",
       invalidEmail: "Zadejte platnou e-mailovou adresu.",
@@ -513,16 +511,77 @@ export function PortfolioPage() {
                 <Button type="button" onClick={() => setSubmitted(false)} className="mt-7 h-12 rounded-full bg-primary px-7 text-base text-primary-foreground hover:bg-primary/90">{language === "cz" ? "Odeslat další" : "Send another"}</Button>
               </div>
             ) : (
-              <form onSubmit={submitForm} noValidate className="grid gap-6 sm:grid-cols-2">
-                <Field label={t.form.name} name="name" required error={errors["name"]} />
-                <Field label={t.form.email} name="email" type="email" required error={errors["email"]} />
-                <Field label={t.form.phone} name="phone" type="tel" />
-                <Field label={t.form.industry} name="industry" required error={errors["industry"]} />
-                <Field label={t.form.website} name="website" type="url" error={errors["website"]} className="sm:col-span-2" placeholder="https://" />
-                <label className="form-field sm:col-span-2"><span>{t.form.brief} *</span><textarea name="brief" rows={5} aria-invalid={Boolean(errors["brief"])} />{errors["brief"] && <small>{errors["brief"]}</small>}</label>
-                <label className="file-field sm:col-span-2"><Paperclip /><span><strong>{t.form.file}</strong><small>{t.form.fileHint}</small></span><input type="file" name="file" accept=".pdf,.doc,.docx,.png,.jpg,.jpeg" /></label>
-                <div className="sm:col-span-2"><Button type="submit" className="h-14 w-full rounded-full bg-primary-foreground text-base text-primary hover:bg-primary-foreground/90">{t.form.submit}<ArrowUpRight /></Button></div>
-              </form>
+              <form
+  action="https://formspree.io/f/xnpnpbzn"
+  method="POST"
+  className="grid gap-6 sm:grid-cols-2"
+>
+  <input
+    type="hidden"
+    name="_subject"
+    value="Nová poptávka z jankech.cz"
+  />
+
+  <Field
+    label={t.form.name}
+    name="name"
+    required
+    error={errors["name"]}
+  />
+
+  <Field
+    label={t.form.email}
+    name="email"
+    type="email"
+    required
+    error={errors["email"]}
+  />
+
+  <Field
+    label={t.form.phone}
+    name="phone"
+    type="tel"
+  />
+
+  <Field
+    label={t.form.industry}
+    name="industry"
+    required
+    error={errors["industry"]}
+  />
+
+  <Field
+    label={t.form.website}
+    name="website"
+    type="url"
+    error={errors["website"]}
+    className="sm:col-span-2"
+    placeholder="https://"
+  />
+
+  <label className="form-field sm:col-span-2">
+    <span>{t.form.brief} *</span>
+
+    <textarea
+      name="brief"
+      rows={5}
+      required
+      aria-invalid={Boolean(errors["brief"])}
+    />
+
+    {errors["brief"] && <small>{errors["brief"]}</small>}
+  </label>
+
+  <div className="sm:col-span-2">
+    <Button
+      type="submit"
+      className="h-14 w-full rounded-full bg-primary-foreground text-base text-primary hover:bg-primary-foreground/90"
+    >
+      {t.form.submit}
+      <ArrowUpRight />
+    </Button>
+  </div>
+</form>
             )}
           </div>
         </div>
