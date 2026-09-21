@@ -3,9 +3,9 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="description" content="Jan Kech — studentské portfolio web designu, AI a digitálních projektů." />
+  <meta name="description" content="Jankech Web — studentské portfolio web designu a digitálních projektů." />
   <meta name="theme-color" content="#f8f9fb" />
-  <title>Jan Kech — student & web designer</title>
+  <title>Jankech Web — student web designer</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -302,9 +302,9 @@
 <body>
   <header class="site-header">
     <div class="container header-inner">
-      <a href="#top" class="brand" aria-label="Jan Kech — domů">
+      <a href="#top" class="brand" aria-label="Jankech Web — domů">
         <span class="brand-mark"><img src="/jankech-web-logo.png" alt="" onerror="this.style.display='none';this.nextElementSibling.style.display='block'" /><span class="brand-fallback">JK</span></span>
-        <span>Jan Kech <span>Web</span></span>
+        <span>Jankech <span>Web</span></span>
       </a>
       <nav aria-label="Hlavní navigace">
         <a href="#projects" data-cz="Projekty" data-en="Projects">Projekty</a>
@@ -395,7 +395,7 @@
         <div class="profile-card reveal" aria-label="Profil Jana Kecha">
           <span class="profile-label" data-cz="Osobní profil" data-en="Personal profile">Osobní profil</span>
           <div class="profile-initials">JK</div>
-          <div class="profile-bottom"><strong>Jan Kech</strong><span data-cz="student · webdesign · AI" data-en="student · web design · AI">student · webdesign · AI</span></div>
+          <div class="profile-bottom"><strong>Jan Kech</strong><span data-cz="student gymnázia v Praze · kvinta" data-en="grammar school student in Prague · year 5">student gymnázia v Praze · kvinta</span></div>
         </div>
         <div class="about-copy reveal">
           <p class="eyebrow" data-cz="O mně" data-en="About me">O mně</p>
@@ -405,8 +405,8 @@
           </p>
           <div class="pills">
             <span class="pill" data-cz="Web design" data-en="Web design">Web design</span>
-            <span class="pill">Lovable</span><span class="pill">GitHub</span><span class="pill">React</span>
-            <span class="pill" data-cz="AI nástroje" data-en="AI tools">AI nástroje</span>
+            <span class="pill" data-cz="AI" data-en="AI">AI</span>
+            <span class="pill" data-cz="Digitální projekty" data-en="Digital projects">Digitální projekty</span>
           </div>
         </div>
       </div>
@@ -437,24 +437,6 @@
       </div>
     </section>
 
-    <section class="section">
-      <div class="container">
-        <div class="tools-panel reveal">
-          <div>
-            <p class="eyebrow" data-cz="Jaké nástroje používám" data-en="Tools I use">Jaké nástroje používám</p>
-            <h2 data-cz="AI pomáhá. Kód a GitHub zůstávají pod kontrolou." data-en="AI helps. Code and GitHub stay under control.">AI pomáhá. Kód a GitHub zůstávají pod kontrolou.</h2>
-            <p data-cz="Lovable používám pro rychlý návrh a iterace. GitHub drží historii projektu a GitHub Pages web publikuje. Postupně se učím víc pracovat přímo s HTML, CSS, Reactem a verzováním." data-en="I use Lovable for rapid concepts and iteration. GitHub keeps the project history and GitHub Pages publishes the site. I'm gradually learning to work more directly with HTML, CSS, React and version control.">Lovable používám pro rychlý návrh a iterace. GitHub drží historii projektu a GitHub Pages web publikuje. Postupně se učím víc pracovat přímo s HTML, CSS, Reactem a verzováním.</p>
-          </div>
-          <div class="tool-list">
-            <div class="tool"><strong>Lovable</strong><span data-cz="návrh a rychlé prototypování" data-en="design & rapid prototyping">návrh a rychlé prototypování</span></div>
-            <div class="tool"><strong>GitHub</strong><span data-cz="verze a historie kódu" data-en="version control & history">verze a historie kódu</span></div>
-            <div class="tool"><strong>GitHub Pages</strong><span data-cz="statický hosting" data-en="static hosting">statický hosting</span></div>
-            <div class="tool"><strong>React / HTML / CSS</strong><span data-cz="frontend a další učení" data-en="front-end & learning">frontend a další učení</span></div>
-          </div>
-        </div>
-      </div>
-    </section>
-
     <section id="contact" class="section border-top">
       <div class="container contact-grid">
         <div class="contact-copy reveal">
@@ -481,8 +463,8 @@
 
   <footer>
     <div class="container footer-inner">
-      <span>© 2026 Jan Kech</span>
-      <span data-cz="Studentské portfolio · Lovable + GitHub Pages" data-en="Student portfolio · Lovable + GitHub Pages">Studentské portfolio · Lovable + GitHub Pages</span>
+      <span>© 2026 Jankech Web</span>
+      <span data-cz="Studentské portfolio" data-en="Student portfolio">Studentské portfolio</span>
     </div>
   </footer>
 
@@ -498,7 +480,7 @@
         el.textContent = el.dataset[next];
       });
       languageButtons.forEach(btn => btn.classList.toggle('active', btn.dataset.lang === next));
-      document.title = next === 'cz' ? 'Jan Kech — student & web designer' : 'Jan Kech — student & web designer';
+      document.title = next === 'cz' ? 'Jankech Web — student web designer' : 'Jankech Web — student web designer';
     }
     languageButtons.forEach(btn => btn.addEventListener('click', () => setLanguage(btn.dataset.lang)));
 
