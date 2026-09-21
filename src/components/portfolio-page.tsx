@@ -28,7 +28,6 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import logoAsset from "@/assets/jankech-web-logo.png.asset.json";
 import stylistImage from "@/assets/project-stylist.jpg";
 import painterImage from "@/assets/project-painter.jpg";
 
@@ -327,12 +326,12 @@ export function PortfolioPage() {
     <main className="relative isolate overflow-hidden bg-background text-foreground">
       <OrganicBackground />
       <div className={`logo-transition ${transitioning ? "is-active" : ""}`} aria-hidden={!transitioning}>
-        <img src={logoAsset.url} alt="" width={120} height={120} />
+        <img src="/jankech-web-logo.png" alt="" width={120} height={120} />
       </div>
       <header className="fixed inset-x-0 top-0 z-40 border-b border-border/60 bg-background/90 backdrop-blur-xl">
         <div className="site-container grid h-20 grid-cols-[minmax(0,1fr)_auto] items-center gap-4 lg:grid-cols-[auto_1fr_auto]">
           <a href="#top" onClick={(event) => { event.preventDefault(); scrollTo("top"); }} className="flex min-w-0 items-center gap-3" aria-label="Jankech Web">
-            <img src={logoAsset.url} alt="" className="h-11 w-11 shrink-0 rounded-full object-cover" width={44} height={44} />
+            <img src="/jankech-web-logo.png" alt="" className="h-11 w-11 shrink-0 rounded-full object-cover" width={44} height={44} />
             <span className="truncate text-base font-bold">Jankech <span className="text-primary">Web</span></span>
           </a>
           <nav className="hidden items-center justify-center gap-7 lg:flex" aria-label="Primary navigation">
@@ -483,7 +482,7 @@ export function PortfolioPage() {
 
       <section className="section-pad">
         <div className="site-container grid gap-12 lg:grid-cols-[.85fr_1.15fr] lg:items-center">
-          <div className="about-mark reveal"><img src={logoAsset.url} alt="Jankech Web" loading="lazy" width={768} height={768} /></div>
+          <div className="about-mark reveal"><img src="/jankech-web-logo.png" alt="Jankech Web" loading="lazy" width={768} height={768} /></div>
           <div className="reveal">
             <p className="eyebrow">{t.aboutTag}</p>
             <h2 className="mt-6 text-4xl font-bold leading-tight md:text-6xl">{t.aboutTitle}</h2>
@@ -531,7 +530,7 @@ export function PortfolioPage() {
 
       <footer className="border-t border-border py-10">
         <div className="site-container grid grid-cols-[minmax(0,1fr)_auto] items-end gap-8">
-          <div><div className="flex items-center gap-3"><img src={logoAsset.url} alt="" className="h-10 w-10 rounded-full" width={40} height={40} /><span className="font-bold">Jankech Web</span></div><p className="mt-4 text-sm text-muted-foreground">{t.footerText}</p></div>
+          <div><div className="flex items-center gap-3"><img src="/jankech-web-logo.png" alt="" className="h-10 w-10 rounded-full" width={40} height={40} /><span className="font-bold">Jankech Web</span></div><p className="mt-4 text-sm text-muted-foreground">{t.footerText}</p></div>
           <p className="text-right text-xs text-muted-foreground">© 2026 Jankech Web<br />{t.rights}</p>
         </div>
       </footer>
