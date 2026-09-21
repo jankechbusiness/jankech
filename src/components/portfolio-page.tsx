@@ -498,7 +498,7 @@ export function PortfolioPage() {
             <p className="mt-6 max-w-xl text-lg leading-relaxed text-muted-foreground">{t.contactText}</p>
             <div className="mt-10 space-y-4">
               <a href="mailto:jankechbusiness@gmail.com" onClick={(event) => { event.preventDefault(); runLogoTransition(() => { window.location.href = "mailto:jankechbusiness@gmail.com"; }); }} className="contact-link"><MessageSquareMore />jankechbusiness@gmail.com</a>
-              <a href="tel:+420608543556" className="contact-link"><BriefcaseBusiness />+420 608 543 556</a>
+              <a href="" className="contact-link"><BriefcaseBusiness /></a>
             </div>
           </div>
           <div className="contact-form-wrap reveal">
