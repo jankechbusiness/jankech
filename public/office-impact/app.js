@@ -95,8 +95,7 @@ async function init() {
 
     const today = new Date();
     today.setHours(0, 0, 0, 0);
-    const nextEvent = state.events.find((event) => parseDate(event.date) >= today);
-    state.calendarDate = nextEvent ? parseDate(nextEvent.date) : new Date();
+    state.calendarDate = startOfWeek(today);
 
     renderEvents();
     renderStories();
@@ -149,45 +148,98 @@ function renderEvents() {
   });
 }
 
+function startOfWeek(date) {
+  const result = new Date(date);
+  result.setHours(0, 0, 0, 0);
+  const day = result.getDay();
+  const mondayOffset = day === 0 ? -6 : 1 - day;
+  result.setDate(result.getDate() + mondayOffset);
+  return result;
+}
+
+function addDays(date, amount) {
+  const result = new Date(date);
+  result.setDate(result.getDate() + amount);
+  return result;
+}
+
+function formatShortDate(date) {
+  return new Intl.DateTimeFormat("en-GB", { day: "numeric", month: "short" }).format(date);
+}
+
+function formatWeekRange(start, end) {
+  const sameMonth = start.getMonth() === end.getMonth();
+  const sameYear = start.getFullYear() === end.getFullYear();
+  if (sameMonth) {
+    return `${start.getDate()}–${end.getDate()} ${new Intl.DateTimeFormat("en-GB", { month: "short" }).format(end)}`;
+  }
+  if (sameYear) return `${formatShortDate(start)} – ${formatShortDate(end)}`;
+  return `${formatShortDate(start)} ${start.getFullYear()} – ${formatShortDate(end)} ${end.getFullYear()}`;
+}
+
 function renderCalendar() {
-  const date = state.calendarDate || new Date();
-  const year = date.getFullYear();
-  const month = date.getMonth();
-  $("#calendarLabel").textContent = `${monthNames[month]} ${year}`;
+  const start = startOfWeek(state.calendarDate || new Date());
+  const weekCount = 13;
+  const end = addDays(start, weekCount * 7 - 1);
+  const startLabel = new Intl.DateTimeFormat("en-GB", { month: "short", year: "numeric" }).format(start);
+  const endLabel = new Intl.DateTimeFormat("en-GB", { month: "short", year: "numeric" }).format(end);
+  $("#calendarLabel").textContent = `${weekCount} weeks · ${startLabel} – ${endLabel}`;
 
-  const firstDay = new Date(year, month, 1);
-  const startOffset = (firstDay.getDay() + 6) % 7;
-  const daysInMonth = new Date(year, month + 1, 0).getDate();
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
+  const prev = $("#calendarPrev");
+  const next = $("#calendarNext");
+  prev.setAttribute("aria-label", "Previous 13 weeks");
+  next.setAttribute("aria-label", "Next 13 weeks");
+  prev.title = "Previous 13 weeks";
+  next.title = "Next 13 weeks";
 
-  const monthEvents = state.events.filter((event) => {
-    const eventDate = parseDate(event.date);
-    return eventDate.getFullYear() === year && eventDate.getMonth() === month;
-  });
+  const weeks = [];
+  for (let index = 0; index < weekCount; index += 1) {
+    const weekStart = addDays(start, index * 7);
+    const weekEnd = addDays(weekStart, 6);
+    weekEnd.setHours(23, 59, 59, 999);
 
-  const cells = [];
-  for (let i = 0; i < startOffset; i += 1) {
-    cells.push(`<div class="calendar-day is-empty" aria-hidden="true"></div>`);
+    const events = state.events.filter((event) => {
+      const eventDate = parseDate(event.date);
+      return eventDate >= weekStart && eventDate <= weekEnd;
+    });
+
+    const eventMarkup = events.length
+      ? events.map((event) => {
+          const eventDate = parseDate(event.date);
+          const weekday = new Intl.DateTimeFormat("en-GB", { weekday: "short" }).format(eventDate);
+          const date = new Intl.DateTimeFormat("en-GB", { day: "numeric", month: "short" }).format(eventDate);
+          const meta = [event.time, event.location].filter(Boolean).join(" · ");
+          return `
+            <button class="week-event${event.demo ? " is-demo" : ""}" type="button" data-calendar-event="${escapeHtml(event.id)}">
+              <span class="week-event__date">${escapeHtml(`${weekday} ${date}`)}</span>
+              <strong>${escapeHtml(event.title)}</strong>
+              ${meta ? `<span class="week-event__meta">${escapeHtml(meta)}</span>` : ""}
+            </button>`;
+        }).join("")
+      : `<span class="week-empty">No events</span>`;
+
+    weeks.push(`
+      <div class="week-row${events.length ? " has-events" : ""}">
+        <div class="week-label">
+          <span>Week ${getIsoWeek(weekStart)}</span>
+          <strong>${escapeHtml(formatWeekRange(weekStart, weekEnd))}</strong>
+        </div>
+        <div class="week-events">${eventMarkup}</div>
+      </div>`);
   }
 
-  for (let day = 1; day <= daysInMonth; day += 1) {
-    const matching = monthEvents.filter((event) => parseDate(event.date).getDate() === day);
-    const cellDate = new Date(year, month, day);
-    cellDate.setHours(0, 0, 0, 0);
-    const classes = ["calendar-day"];
-    if (matching.length) classes.push("has-event");
-    if (matching.some((event) => event.demo)) classes.push("has-demo");
-    if (cellDate.getTime() === today.getTime()) classes.push("is-today");
-    const title = matching.map((event) => event.title).join(", ");
-    const eventId = matching[0]?.id || "";
-    cells.push(`<button class="${classes.join(" ")}" type="button" ${eventId ? `data-calendar-event="${escapeHtml(eventId)}"` : "disabled"} ${title ? `title="${escapeHtml(title)}"` : ""}>${day}</button>`);
-  }
-
-  $("#calendarGrid").innerHTML = cells.join("");
+  $("#calendarGrid").innerHTML = weeks.join("");
   $("#calendarGrid").querySelectorAll("[data-calendar-event]").forEach((button) => {
     button.addEventListener("click", () => openEvent(button.dataset.calendarEvent));
   });
+}
+
+function getIsoWeek(date) {
+  const working = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
+  const day = working.getUTCDay() || 7;
+  working.setUTCDate(working.getUTCDate() + 4 - day);
+  const yearStart = new Date(Date.UTC(working.getUTCFullYear(), 0, 1));
+  return Math.ceil((((working - yearStart) / 86400000) + 1) / 7);
 }
 
 function renderStories() {
@@ -221,10 +273,10 @@ function renderPeople() {
     return;
   }
 
-  container.innerHTML = state.people.map((person) => {
+  container.innerHTML = state.people.map((person, index) => {
     const image = assetUrl(person.image);
     return `
-      <article class="person-card">
+      <article class="person-card person-card--interactive" data-person-index="${index}" role="button" tabindex="0" aria-label="Open profile for ${escapeHtml(person.name)}">
         <div class="person-avatar">
           <span>${escapeHtml(initials(person.name))}</span>
           ${image ? `<img src="${escapeHtml(image)}" alt="${escapeHtml(person.name)}" loading="lazy" />` : ""}
@@ -233,19 +285,67 @@ function renderPeople() {
           <h3>${escapeHtml(person.name)}</h3>
           <div class="role">${escapeHtml([person.role, person.organization].filter(Boolean).join(" · "))}</div>
           <p>${escapeHtml(person.bio || "")}</p>
-          ${person.linkedin_url ? `<a href="${escapeHtml(person.linkedin_url)}" target="_blank" rel="noreferrer">LinkedIn ↗</a>` : ""}
+          <div class="person-actions">
+            <span class="profile-link">View profile →</span>
+            ${person.linkedin_url ? `<a href="${escapeHtml(person.linkedin_url)}" target="_blank" rel="noreferrer">LinkedIn ↗</a>` : ""}
+          </div>
         </div>
       </article>`;
   }).join("");
 
-  // If a configured image path is wrong, keep the initials fallback visible
-  // instead of showing a broken-image icon.
   container.querySelectorAll(".person-avatar img").forEach((img) => {
     img.addEventListener("error", () => {
       console.warn("Office Impact profile image could not be loaded:", img.getAttribute("src"));
       img.remove();
     });
   });
+
+  container.querySelectorAll("[data-person-index]").forEach((card) => {
+    const open = () => openPerson(Number(card.dataset.personIndex));
+    card.addEventListener("click", (event) => {
+      if (event.target.closest("a")) return;
+      open();
+    });
+    card.addEventListener("keydown", (event) => {
+      if (event.key === "Enter" || event.key === " ") {
+        event.preventDefault();
+        open();
+      }
+    });
+  });
+}
+
+function openPerson(index) {
+  const person = state.people[index];
+  if (!person) return;
+
+  const image = assetUrl(person.image);
+  const role = [person.role, person.organization].filter(Boolean).join(" · ");
+  const linkedin = person.linkedin_url
+    ? `<a class="dialog-source" href="${escapeHtml(person.linkedin_url)}" target="_blank" rel="noreferrer">View LinkedIn profile ↗</a>`
+    : "";
+
+  openDialog(`
+    <div class="dialog-body person-dialog">
+      <div class="person-dialog__header">
+        <div class="person-dialog__avatar">
+          <span>${escapeHtml(initials(person.name))}</span>
+          ${image ? `<img src="${escapeHtml(image)}" alt="${escapeHtml(person.name)}" />` : ""}
+        </div>
+        <div>
+          <span class="section-kicker">Community profile</span>
+          <h2>${escapeHtml(person.name)}</h2>
+          ${role ? `<div class="dialog-meta"><span>${escapeHtml(role)}</span></div>` : ""}
+        </div>
+      </div>
+      <div class="dialog-copy">${person.bio ? `<p>${escapeHtml(person.bio)}</p>` : `<p>Profile details will be added soon.</p>`}</div>
+      ${linkedin}
+    </div>`);
+
+  const dialogImage = $("#dialogContent .person-dialog__avatar img");
+  if (dialogImage) {
+    dialogImage.addEventListener("error", () => dialogImage.remove());
+  }
 }
 
 function openPost(slug) {
@@ -292,11 +392,11 @@ $("#contentDialog").addEventListener("click", (event) => {
 });
 
 $("#calendarPrev").addEventListener("click", () => {
-  state.calendarDate = new Date(state.calendarDate.getFullYear(), state.calendarDate.getMonth() - 1, 1);
+  state.calendarDate = addDays(startOfWeek(state.calendarDate || new Date()), -13 * 7);
   renderCalendar();
 });
 $("#calendarNext").addEventListener("click", () => {
-  state.calendarDate = new Date(state.calendarDate.getFullYear(), state.calendarDate.getMonth() + 1, 1);
+  state.calendarDate = addDays(startOfWeek(state.calendarDate || new Date()), 13 * 7);
   renderCalendar();
 });
 
