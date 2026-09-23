@@ -95,7 +95,7 @@ async function init() {
 
     const today = new Date();
     today.setHours(0, 0, 0, 0);
-    state.calendarDate = startOfWeek(today);
+    state.calendarDate = startOfMonth(today);
 
     renderEvents();
     renderStories();
@@ -163,6 +163,32 @@ function addDays(date, amount) {
   return result;
 }
 
+function startOfMonth(date) {
+  const result = new Date(date);
+  result.setHours(0, 0, 0, 0);
+  result.setDate(1);
+  return result;
+}
+
+function endOfMonth(date) {
+  const result = new Date(date.getFullYear(), date.getMonth() + 1, 0);
+  result.setHours(23, 59, 59, 999);
+  return result;
+}
+
+function addMonths(date, amount) {
+  const result = new Date(date.getFullYear(), date.getMonth() + amount, 1);
+  result.setHours(0, 0, 0, 0);
+  return result;
+}
+
+function dateKey(date) {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
+}
+
 function formatShortDate(date) {
   return new Intl.DateTimeFormat("en-GB", { day: "numeric", month: "short" }).format(date);
 }
@@ -178,59 +204,121 @@ function formatWeekRange(start, end) {
 }
 
 function renderCalendar() {
-  const start = startOfWeek(state.calendarDate || new Date());
-  const weekCount = 13;
-  const end = addDays(start, weekCount * 7 - 1);
-  const startLabel = new Intl.DateTimeFormat("en-GB", { month: "short", year: "numeric" }).format(start);
-  const endLabel = new Intl.DateTimeFormat("en-GB", { month: "short", year: "numeric" }).format(end);
-  $("#calendarLabel").textContent = `${weekCount} weeks · ${startLabel} – ${endLabel}`;
+  const firstMonth = startOfMonth(state.calendarDate || new Date());
+  const months = [firstMonth, addMonths(firstMonth, 1), addMonths(firstMonth, 2)];
+  const lastMonth = months[2];
+
+  const firstLabel = new Intl.DateTimeFormat("en-GB", { month: "short" }).format(firstMonth);
+  const lastLabel = new Intl.DateTimeFormat("en-GB", { month: "short" }).format(lastMonth);
+  const label = firstMonth.getFullYear() === lastMonth.getFullYear()
+    ? `${firstLabel} — ${lastLabel} ${lastMonth.getFullYear()}`
+    : `${firstLabel} ${firstMonth.getFullYear()} — ${lastLabel} ${lastMonth.getFullYear()}`;
+
+  $("#calendarLabel").textContent = label;
 
   const prev = $("#calendarPrev");
   const next = $("#calendarNext");
-  prev.setAttribute("aria-label", "Previous 13 weeks");
-  next.setAttribute("aria-label", "Next 13 weeks");
-  prev.title = "Previous 13 weeks";
-  next.title = "Next 13 weeks";
+  prev.setAttribute("aria-label", "Previous three months");
+  next.setAttribute("aria-label", "Next three months");
+  prev.title = "Previous three months";
+  next.title = "Next three months";
 
-  const weeks = [];
-  for (let index = 0; index < weekCount; index += 1) {
-    const weekStart = addDays(start, index * 7);
-    const weekEnd = addDays(weekStart, 6);
-    weekEnd.setHours(23, 59, 59, 999);
+  const monthRows = months.map((monthDate) => {
+    const monthStart = startOfMonth(monthDate);
+    const monthEnd = endOfMonth(monthDate);
+    const monthName = new Intl.DateTimeFormat("en-GB", { month: "long" }).format(monthStart);
+    const monthShort = new Intl.DateTimeFormat("en-GB", { month: "short" }).format(monthStart);
 
-    const events = state.events.filter((event) => {
-      const eventDate = parseDate(event.date);
-      return eventDate >= weekStart && eventDate <= weekEnd;
-    });
+    const segments = [];
+    let weekStart = startOfWeek(monthStart);
 
-    const eventMarkup = events.length
-      ? events.map((event) => {
-          const eventDate = parseDate(event.date);
-          const weekday = new Intl.DateTimeFormat("en-GB", { weekday: "short" }).format(eventDate);
-          const date = new Intl.DateTimeFormat("en-GB", { day: "numeric", month: "short" }).format(eventDate);
-          const meta = [event.time, event.location].filter(Boolean).join(" · ");
-          return `
-            <button class="week-event${event.demo ? " is-demo" : ""}" type="button" data-calendar-event="${escapeHtml(event.id)}">
-              <span class="week-event__date">${escapeHtml(`${weekday} ${date}`)}</span>
-              <strong>${escapeHtml(event.title)}</strong>
-              ${meta ? `<span class="week-event__meta">${escapeHtml(meta)}</span>` : ""}
-            </button>`;
-        }).join("")
-      : `<span class="week-empty">No events</span>`;
+    while (weekStart <= monthEnd) {
+      const weekEnd = addDays(weekStart, 6);
+      weekEnd.setHours(23, 59, 59, 999);
 
-    weeks.push(`
-      <div class="week-row${events.length ? " has-events" : ""}">
-        <div class="week-label">
-          <span>Week ${getIsoWeek(weekStart)}</span>
-          <strong>${escapeHtml(formatWeekRange(weekStart, weekEnd))}</strong>
+      const segmentStart = weekStart < monthStart ? monthStart : weekStart;
+      const segmentEnd = weekEnd > monthEnd ? monthEnd : weekEnd;
+      const segmentEvents = state.events.filter((event) => {
+        const eventDate = parseDate(event.date);
+        return eventDate >= segmentStart && eventDate <= segmentEnd;
+      });
+
+      const rangeLabel = segmentStart.getDate() === segmentEnd.getDate()
+        ? `${segmentStart.getDate()}`
+        : `${segmentStart.getDate()}–${segmentEnd.getDate()}`;
+      const fullRange = `${formatShortDate(segmentStart)} – ${formatShortDate(segmentEnd)}`;
+      const countLabel = segmentEvents.length > 1 ? `${segmentEvents.length}` : "";
+      const eventIds = segmentEvents.map((event) => event.id).join("|");
+
+      const common = `class="month-week${segmentEvents.length ? " has-events" : ""}" aria-label="${escapeHtml(fullRange)}${segmentEvents.length ? `, ${segmentEvents.length} event${segmentEvents.length === 1 ? "" : "s"}` : ", no events"}"`;
+      if (segmentEvents.length) {
+        segments.push(`
+          <button ${common} type="button" data-calendar-events="${escapeHtml(eventIds)}">
+            <span class="month-week__range">${escapeHtml(rangeLabel)}</span>
+            <span class="month-week__marker" aria-hidden="true"><i></i>${countLabel ? `<b>${countLabel}</b>` : ""}</span>
+          </button>`);
+      } else {
+        segments.push(`
+          <div ${common}>
+            <span class="month-week__range">${escapeHtml(rangeLabel)}</span>
+            <span class="month-week__marker month-week__marker--empty" aria-hidden="true"></span>
+          </div>`);
+      }
+
+      weekStart = addDays(weekStart, 7);
+    }
+
+    return `
+      <div class="month-row">
+        <div class="month-row__label">
+          <strong class="month-row__name month-row__name--full">${escapeHtml(monthName)}</strong>
+          <strong class="month-row__name month-row__name--short">${escapeHtml(monthShort)}</strong>
+          <span>${monthStart.getFullYear()}</span>
         </div>
-        <div class="week-events">${eventMarkup}</div>
-      </div>`);
+        <div class="month-row__weeks" style="--week-count:${segments.length}">
+          ${segments.join("")}
+        </div>
+      </div>`;
+  });
+
+  $("#calendarGrid").innerHTML = monthRows.join("");
+  $("#calendarGrid").querySelectorAll("[data-calendar-events]").forEach((button) => {
+    button.addEventListener("click", () => {
+      const ids = (button.dataset.calendarEvents || "").split("|").filter(Boolean);
+      if (ids.length === 1) openEvent(ids[0]);
+      else if (ids.length > 1) openEventChoices(ids);
+    });
+  });
+}
+
+function openEventChoices(ids) {
+  const events = ids
+    .map((id) => state.events.find((event) => event.id === id))
+    .filter(Boolean)
+    .sort((a, b) => parseDate(a.date) - parseDate(b.date));
+
+  if (!events.length) return;
+  if (events.length === 1) {
+    openEvent(events[0].id);
+    return;
   }
 
-  $("#calendarGrid").innerHTML = weeks.join("");
-  $("#calendarGrid").querySelectorAll("[data-calendar-event]").forEach((button) => {
-    button.addEventListener("click", () => openEvent(button.dataset.calendarEvent));
+  openDialog(`
+    <div class="dialog-body">
+      <span class="section-kicker">Events</span>
+      <h2>${events.length} events this week</h2>
+      <div class="dialog-event-list">
+        ${events.map((event) => `
+          <button class="dialog-event-choice" type="button" data-dialog-event="${escapeHtml(event.id)}">
+            <span>${escapeHtml(formatDate(event.date, { day: "2-digit", month: "short", year: "numeric" }))}</span>
+            <strong>${escapeHtml(event.title)}</strong>
+            <small>${escapeHtml([event.time, event.location].filter(Boolean).join(" · "))}</small>
+          </button>`).join("")}
+      </div>
+    </div>`);
+
+  $("#dialogContent").querySelectorAll("[data-dialog-event]").forEach((button) => {
+    button.addEventListener("click", () => openEvent(button.dataset.dialogEvent));
   });
 }
 
@@ -392,11 +480,11 @@ $("#contentDialog").addEventListener("click", (event) => {
 });
 
 $("#calendarPrev").addEventListener("click", () => {
-  state.calendarDate = addDays(startOfWeek(state.calendarDate || new Date()), -13 * 7);
+  state.calendarDate = addMonths(startOfMonth(state.calendarDate || new Date()), -3);
   renderCalendar();
 });
 $("#calendarNext").addEventListener("click", () => {
-  state.calendarDate = addDays(startOfWeek(state.calendarDate || new Date()), 13 * 7);
+  state.calendarDate = addMonths(startOfMonth(state.calendarDate || new Date()), 3);
   renderCalendar();
 });
 
