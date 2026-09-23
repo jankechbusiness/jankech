@@ -108,7 +108,7 @@ async function init() {
 }
 
 function showLoadErrors() {
-  const message = `<div class="error-box"><strong>Demo content could not be loaded.</strong><br />Serve this folder through a web server (not directly as a file) so the JSON content can be fetched.</div>`;
+  const message = `<div class="error-box"><strong>Content could not be loaded.</strong><br />Please refresh the page or try again shortly.</div>`;
   $("#eventList").innerHTML = message;
   $("#storyGrid").innerHTML = message;
   $("#peopleGrid").innerHTML = message;
@@ -122,7 +122,7 @@ function renderEvents() {
   $("#upcomingCount").textContent = `${upcoming.length} event${upcoming.length === 1 ? "" : "s"}`;
 
   if (!upcoming.length) {
-    container.innerHTML = `<div class="event-item"><div class="event-info"><h3>No upcoming events yet</h3><p>Add one in Pages CMS and it will appear here automatically.</p></div></div>`;
+    container.innerHTML = `<div class="event-item"><div class="event-info"><h3>No upcoming events yet</h3><p>New events will be announced here.</p></div></div>`;
     return;
   }
 
@@ -137,7 +137,6 @@ function renderEvents() {
         <div class="event-info">
           <h3>${escapeHtml(event.title)}</h3>
           <p>${escapeHtml(meta)}</p>
-          ${event.demo ? `<span class="badge">Prototype event</span>` : ""}
         </div>
         <button class="event-open" type="button" data-event="${escapeHtml(event.id)}" aria-label="Open ${escapeHtml(event.title)}">↗</button>
       </article>`;
@@ -456,11 +455,11 @@ function openEvent(id) {
   const event = state.events.find((item) => item.id === id);
   if (!event) return;
   const register = event.registration_url
-    ? `<a class="dialog-source" href="${escapeHtml(event.registration_url)}" target="_blank" rel="noreferrer">${event.demo ? "Demo registration link" : "Event details / registration"} ↗</a>`
+    ? `<a class="dialog-source" href="${escapeHtml(event.registration_url)}" target="_blank" rel="noreferrer">Event details / registration ↗</a>`
     : "";
   openDialog(`
     <div class="dialog-body">
-      <span class="section-kicker">${escapeHtml(event.type || "Community event")}${event.demo ? " · prototype" : ""}</span>
+      <span class="section-kicker">${escapeHtml(event.type || "Community event")}</span>
       <h2>${escapeHtml(event.title)}</h2>
       <div class="dialog-meta"><span>${escapeHtml(formatDate(event.date))}</span><span>· ${escapeHtml([event.time, event.location].filter(Boolean).join(" · "))}</span></div>
       <div class="dialog-copy">${event.body || `<p>${escapeHtml(event.summary || "")}</p>`}</div>
