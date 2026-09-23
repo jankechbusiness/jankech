@@ -204,8 +204,8 @@ function formatWeekRange(start, end) {
 
 function renderCalendar() {
   const firstMonth = startOfMonth(state.calendarDate || new Date());
-  const months = [firstMonth, addMonths(firstMonth, 1), addMonths(firstMonth, 2)];
-  const lastMonth = months[2];
+  const months = [0, 1, 2, 3].map((offset) => addMonths(firstMonth, offset));
+  const lastMonth = months[months.length - 1];
 
   const firstLabel = new Intl.DateTimeFormat("en-GB", { month: "short" }).format(firstMonth);
   const lastLabel = new Intl.DateTimeFormat("en-GB", { month: "short" }).format(lastMonth);
@@ -217,12 +217,48 @@ function renderCalendar() {
 
   const prev = $("#calendarPrev");
   const next = $("#calendarNext");
-  prev.setAttribute("aria-label", "Previous three months");
-  next.setAttribute("aria-label", "Next three months");
-  prev.title = "Previous three months";
-  next.title = "Next three months";
+  prev.setAttribute("aria-label", "Previous four months");
+  next.setAttribute("aria-label", "Next four months");
+  prev.title = "Previous four months";
+  next.title = "Next four months";
 
-  const monthRows = months.map((monthDate) => {
+  const monthOverview = months.map((monthDate) => {
+    const monthStart = startOfMonth(monthDate);
+    const monthEnd = endOfMonth(monthDate);
+    const monthShort = new Intl.DateTimeFormat("en-GB", { month: "short" }).format(monthStart).toUpperCase();
+    const monthLong = new Intl.DateTimeFormat("en-GB", { month: "long" }).format(monthStart);
+    const monthEvents = state.events.filter((event) => {
+      const eventDate = parseDate(event.date);
+      return eventDate >= monthStart && eventDate <= monthEnd;
+    });
+    const eventIds = monthEvents.map((event) => event.id).join("|");
+    const countText = monthEvents.length
+      ? `${monthEvents.length} event${monthEvents.length === 1 ? "" : "s"}`
+      : "No events";
+    const eventDays = monthEvents.slice(0, 3).map((event) => parseDate(event.date).getDate());
+    const daysText = eventDays.length
+      ? `${eventDays.join(" · ")}${monthEvents.length > 3 ? ` +${monthEvents.length - 3}` : ""}`
+      : "—";
+    const common = `class="month-tile${monthEvents.length ? " has-events" : ""}" aria-label="${escapeHtml(monthLong)} ${monthStart.getFullYear()}, ${escapeHtml(countText)}"`;
+
+    if (monthEvents.length) {
+      return `
+        <button ${common} type="button" data-month-events="${escapeHtml(eventIds)}" data-month-name="${escapeHtml(monthLong)}">
+          <span class="month-tile__name">${escapeHtml(monthShort)}</span>
+          <span class="month-tile__count">${escapeHtml(countText)}</span>
+          <span class="month-tile__days">${escapeHtml(daysText)}</span>
+        </button>`;
+    }
+
+    return `
+      <div ${common}>
+        <span class="month-tile__name">${escapeHtml(monthShort)}</span>
+        <span class="month-tile__count">${escapeHtml(countText)}</span>
+        <span class="month-tile__days">${escapeHtml(daysText)}</span>
+      </div>`;
+  }).join("");
+
+  const weeklyRows = months.map((monthDate) => {
     const monthStart = startOfMonth(monthDate);
     const monthEnd = endOfMonth(monthDate);
     const monthName = new Intl.DateTimeFormat("en-GB", { month: "long" }).format(monthStart);
@@ -278,19 +314,43 @@ function renderCalendar() {
           ${segments.join("")}
         </div>
       </div>`;
+  }).join("");
+
+  $("#calendarGrid").innerHTML = `
+    <details class="calendar-mode" open>
+      <summary>
+        <span>Monthly overview</span>
+        <small>4 months</small>
+      </summary>
+      <div class="month-overview">${monthOverview}</div>
+    </details>
+
+    <details class="calendar-mode calendar-mode--weekly">
+      <summary>
+        <span>Weekly detail</span>
+        <small>expand</small>
+      </summary>
+      <div class="weekly-overview">${weeklyRows}</div>
+    </details>`;
+
+  $("#calendarGrid").querySelectorAll("[data-month-events]").forEach((button) => {
+    button.addEventListener("click", () => {
+      const ids = (button.dataset.monthEvents || "").split("|").filter(Boolean);
+      if (ids.length === 1) openEvent(ids[0]);
+      else if (ids.length > 1) openEventChoices(ids, `in ${button.dataset.monthName}`);
+    });
   });
 
-  $("#calendarGrid").innerHTML = monthRows.join("");
   $("#calendarGrid").querySelectorAll("[data-calendar-events]").forEach((button) => {
     button.addEventListener("click", () => {
       const ids = (button.dataset.calendarEvents || "").split("|").filter(Boolean);
       if (ids.length === 1) openEvent(ids[0]);
-      else if (ids.length > 1) openEventChoices(ids);
+      else if (ids.length > 1) openEventChoices(ids, "this week");
     });
   });
 }
 
-function openEventChoices(ids) {
+function openEventChoices(ids, contextLabel = "this period") {
   const events = ids
     .map((id) => state.events.find((event) => event.id === id))
     .filter(Boolean)
@@ -305,7 +365,7 @@ function openEventChoices(ids) {
   openDialog(`
     <div class="dialog-body">
       <span class="section-kicker">Events</span>
-      <h2>${events.length} events this week</h2>
+      <h2>${events.length} events ${escapeHtml(contextLabel)}</h2>
       <div class="dialog-event-list">
         ${events.map((event) => `
           <button class="dialog-event-choice" type="button" data-dialog-event="${escapeHtml(event.id)}">
@@ -479,11 +539,11 @@ $("#contentDialog").addEventListener("click", (event) => {
 });
 
 $("#calendarPrev").addEventListener("click", () => {
-  state.calendarDate = addMonths(startOfMonth(state.calendarDate || new Date()), -3);
+  state.calendarDate = addMonths(startOfMonth(state.calendarDate || new Date()), -4);
   renderCalendar();
 });
 $("#calendarNext").addEventListener("click", () => {
-  state.calendarDate = addMonths(startOfMonth(state.calendarDate || new Date()), 3);
+  state.calendarDate = addMonths(startOfMonth(state.calendarDate || new Date()), 4);
   renderCalendar();
 });
 
