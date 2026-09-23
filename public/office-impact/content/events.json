@@ -7,9 +7,8 @@
     "location": "DB55, Amsterdam",
     "type": "Summit",
     "summary": "A full day for office, workplace and facilities professionals: keynotes, roundtables, wellbeing moments and peer connection.",
-    "body": "<p>The first Office Impact Summit was created for the people who run the workplace and shape how it feels. The programme combined practical roundtables, keynote sessions and time to connect with peers.</p><p>This is a real past event included to demonstrate how the site keeps an event archive automatically once the date has passed.</p>",
+    "body": "<p>The first Office Impact Summit was created for the people who run the workplace and shape how it feels. The programme combined practical roundtables, keynote sessions and time to connect with peers.</p>",
     "registration_url": "https://officeimpact.co/",
-    "demo": false,
     "published": true
   },
   {
@@ -20,10 +19,9 @@
     "location": "Amsterdam · venue TBC",
     "type": "Community meetup",
     "summary": "A small peer session on attendance, energy and creating an office people actually want to use.",
-    "body": "<p><strong>Prototype event.</strong> This item exists to demonstrate the editing workflow and upcoming-event logic. Replace it with a real event in Pages CMS.</p><p>The format is deliberately lightweight: one practical question, a small group, and enough time for everyone to exchange what is working in their own workplace.</p>",
+    "body": "<p>A small peer session around one practical workplace question, with time to compare approaches and exchange what is working.</p>",
     "registration_url": "https://www.linkedin.com/groups/42222009/",
-    "demo": true,
-    "published": true
+    "published": false
   },
   {
     "id": "roundtable-doing-more-with-less",
@@ -33,9 +31,8 @@
     "location": "Amsterdam · venue TBC",
     "type": "Roundtable",
     "summary": "Budgets, planning and the practical choices workplace teams make when resources are tight.",
-    "body": "<p><strong>Prototype event.</strong> A sample roundtable based on one of the discussion themes used at the Office Impact Summit.</p><p>In the CMS, an editor can change the title, date, location and description without touching the website code. Once saved, the event appears in the list and calendar automatically.</p>",
+    "body": "<p>A focused roundtable on budgets, planning and the practical choices workplace teams make when resources are tight.</p>",
     "registration_url": "https://www.linkedin.com/groups/42222009/",
-    "demo": true,
-    "published": true
+    "published": false
   }
 ]
