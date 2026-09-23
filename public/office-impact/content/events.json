@@ -9,6 +9,7 @@
     "summary": "A full day for office, workplace and facilities professionals: keynotes, roundtables, wellbeing moments and peer connection.",
     "body": "<p>The first Office Impact Summit was created for the people who run the workplace and shape how it feels. The programme combined practical roundtables, keynote sessions and time to connect with peers.</p>",
     "registration_url": "https://officeimpact.co/",
+    "demo": false,
     "published": true
   },
   {
@@ -21,7 +22,8 @@
     "summary": "A small peer session on attendance, energy and creating an office people actually want to use.",
     "body": "<p>A small peer session around one practical workplace question, with time to compare approaches and exchange what is working.</p>",
     "registration_url": "https://www.linkedin.com/groups/42222009/",
-    "published": false
+    "demo": true,
+    "published": true
   },
   {
     "id": "roundtable-doing-more-with-less",
@@ -33,6 +35,7 @@
     "summary": "Budgets, planning and the practical choices workplace teams make when resources are tight.",
     "body": "<p>A focused roundtable on budgets, planning and the practical choices workplace teams make when resources are tight.</p>",
     "registration_url": "https://www.linkedin.com/groups/42222009/",
-    "published": false
+    "demo": true,
+    "published": true
   }
 ]
