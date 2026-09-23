@@ -3,6 +3,7 @@ const state = {
   events: [],
   people: [],
   calendarDate: null,
+  eventView: "upcoming",
 };
 
 const $ = (selector) => document.querySelector(selector);
@@ -116,34 +117,80 @@ function showLoadErrors() {
 
 function renderEvents() {
   const container = $("#eventList");
+  const heading = container?.previousElementSibling;
   const today = new Date();
   today.setHours(0, 0, 0, 0);
-  const upcoming = state.events.filter((event) => parseDate(event.date) >= today);
-  $("#upcomingCount").textContent = `${upcoming.length} event${upcoming.length === 1 ? "" : "s"}`;
 
-  if (!upcoming.length) {
-    container.innerHTML = `<div class="event-item"><div class="event-info"><h3>No upcoming events yet</h3><p>New events will be announced here.</p></div></div>`;
+  const upcoming = state.events
+    .filter((event) => parseDate(event.date) >= today)
+    .sort((a, b) => parseDate(a.date) - parseDate(b.date));
+
+  const past = state.events
+    .filter((event) => parseDate(event.date) < today)
+    .sort((a, b) => parseDate(b.date) - parseDate(a.date));
+
+  const showingPast = state.eventView === "past";
+  const visibleEvents = showingPast ? past : upcoming;
+  const label = showingPast ? "Past" : "Upcoming";
+
+  if (heading) {
+    heading.innerHTML = `
+      <div class="event-view-toggle" role="group" aria-label="Choose events to display">
+        <button class="event-view-toggle__button${!showingPast ? " is-active" : ""}" type="button" data-event-view="upcoming" aria-pressed="${String(!showingPast)}">Upcoming</button>
+        <button class="event-view-toggle__button${showingPast ? " is-active" : ""}" type="button" data-event-view="past" aria-pressed="${String(showingPast)}">Past</button>
+      </div>
+      <span class="event-view-count">${visibleEvents.length} event${visibleEvents.length === 1 ? "" : "s"}</span>`;
+
+    heading.querySelectorAll("[data-event-view]").forEach((button) => {
+      button.addEventListener("click", () => {
+        const nextView = button.dataset.eventView;
+        if (!nextView || nextView === state.eventView) return;
+        state.eventView = nextView;
+        renderEvents();
+      });
+    });
+  }
+
+  if (!visibleEvents.length) {
+    container.innerHTML = `
+      <div class="event-item event-item--empty">
+        <div class="event-info">
+          <h3>${showingPast ? "No past events yet" : "No upcoming events yet"}</h3>
+          <p>${showingPast ? "Previous gatherings will appear here." : "New events will be announced here."}</p>
+        </div>
+      </div>`;
     return;
   }
 
-  container.innerHTML = upcoming.map((event) => {
+  container.innerHTML = visibleEvents.map((event) => {
     const date = parseDate(event.date);
     const day = date.getDate();
     const month = new Intl.DateTimeFormat("en-GB", { month: "short" }).format(date);
-    const meta = [event.time, event.location].filter(Boolean).join(" · ");
+    const year = date.getFullYear();
+    const metaParts = [event.time, event.location].filter(Boolean);
+    if (showingPast || year !== today.getFullYear()) metaParts.unshift(String(year));
+    const meta = metaParts.join(" · ");
+
     return `
-      <article class="event-item">
+      <article class="event-item event-item--clickable" data-event="${escapeHtml(event.id)}" role="button" tabindex="0" aria-label="Open ${escapeHtml(event.title)}">
         <div class="event-date"><strong>${day}</strong><span>${escapeHtml(month)}</span></div>
         <div class="event-info">
           <h3>${escapeHtml(event.title)}</h3>
           <p>${escapeHtml(meta)}</p>
         </div>
-        <button class="event-open" type="button" data-event="${escapeHtml(event.id)}" aria-label="Open ${escapeHtml(event.title)}">↗</button>
+        <span class="event-open" aria-hidden="true">↗</span>
       </article>`;
   }).join("");
 
-  container.querySelectorAll("[data-event]").forEach((button) => {
-    button.addEventListener("click", () => openEvent(button.dataset.event));
+  container.querySelectorAll("[data-event]").forEach((item) => {
+    const open = () => openEvent(item.dataset.event);
+    item.addEventListener("click", open);
+    item.addEventListener("keydown", (event) => {
+      if (event.key === "Enter" || event.key === " ") {
+        event.preventDefault();
+        open();
+      }
+    });
   });
 }
 
