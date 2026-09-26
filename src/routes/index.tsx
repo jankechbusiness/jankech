@@ -4,10 +4,10 @@ import { PortfolioPage } from "@/components/portfolio-page";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Jankech Web | Moderní weby, SEO a automatizace" },
-      { name: "description", content: "Moderní weby pro lokální firmy, které budují důvěru a přivádějí kvalitní poptávky." },
-      { property: "og:title", content: "Jankech Web | Z návštěv na poptávky" },
-      { property: "og:description", content: "Web design, SEO a automatizace pro růst lokálních firem." },
+      { title: "Oliver Jankech | Jednoduché weby a digitální projekty" },
+      { name: "description", content: "Jsem 15letý student gymnázia a tvořím jednoduché weby, online prezentace a digitální projekty — poctivě a za férovou cenu." },
+      { property: "og:title", content: "Oliver Jankech | Jednoduché weby a digitální projekty" },
+      { property: "og:description", content: "Student gymnázia, který rád pomůže s menším webem nebo online prezentací." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
     ],

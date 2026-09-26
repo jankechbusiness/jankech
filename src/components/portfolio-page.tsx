@@ -94,7 +94,7 @@ const copy = {
     pricingTag: "Cena",
     pricingTitle: "Férová cena bez složitostí.",
     pricingRange: "Menší weby od 5 000 Kč",
-    pricingText: "Konečná cena záleží na rozsahu projektu. Napište mi, co potřebujete, a dámi vám cenovou nabídku — zdarma a bez závazku.",
+    pricingText: "Konečná cena záleží na rozsahu projektu. Napište mi, co potřebujete, a dám vám cenovou nabídku — zdarma a bez závazku.",
     contactTag: "Kontakt",
     contactTitle: "Napiš mi.",
     contactText: "Máš nápad, chceš jednoduchý web nebo pomoct s online prezentací? Napiš mi — ozvu se a domluvíme další kroky.",
