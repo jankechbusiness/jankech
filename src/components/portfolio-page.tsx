@@ -28,7 +28,6 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import logoAsset from "@/assets/jankech-web-logo.png.asset.json";
 import stylistImage from "@/assets/project-stylist.jpg";
 import painterImage from "@/assets/project-painter.jpg";
 
@@ -101,8 +100,11 @@ const copy = {
     form: {
       name: "Jméno",
       email: "E-mail",
-      brief: "O čem je projekt?",
-      submit: "Odeslat zprávu",
+      phone: "Telefon",
+      industry: "Obor firmy",
+      brief: "Co potřebujete?",
+      website: "ODKAZ NA SOUČASNÝ WEB (POKUD NĚJÁKÝ MÁTE)",
+      submit: "Odeslat poptávku",
       required: "Vyplňte prosím toto pole.",
       invalidEmail: "Zadejte platnou e-mailovou adresu.",
       successTitle: "Děkuji za zprávu.",
@@ -289,7 +291,7 @@ export function PortfolioPage() {
     <main className="relative isolate overflow-hidden bg-background text-foreground">
       <OrganicBackground />
       <div className={`logo-transition ${transitioning ? "is-active" : ""}`} aria-hidden={!transitioning}>
-        <img src={logoAsset.url} alt="" width={120} height={120} />
+        <img src="/jankech-web-logo.png" alt="" width={120} height={120} />
       </div>
       <header className="fixed inset-x-0 top-0 z-40 border-b border-border/60 bg-background/90 backdrop-blur-xl">
         <div className="site-container grid h-20 grid-cols-[minmax(0,1fr)_auto] items-center gap-4 lg:grid-cols-[auto_1fr_auto]">
@@ -408,6 +410,36 @@ export function PortfolioPage() {
         </div>
       </section>
 
+      <section className="section-pad border-y border-border">
+        <div className="site-container">
+          <SectionHeading tag={t.refsTag} title={t.refsTitle} />
+          <div className="mt-14 grid gap-5 lg:grid-cols-3">
+            {t.refs.map(([quote, name, role], index) => (
+              <article key={name} className="testimonial reveal">
+                <span className="sample-badge">{t.placeholder}</span>
+                <p className="quote">{quote}</p>
+                <div className="mt-8 flex items-center gap-4">
+                  <div className={`avatar avatar-${index + 1}`}>{name.charAt(0)}</div>
+                  <div><p className="font-bold">{name}</p><p className="text-sm text-muted-foreground">{role}</p></div>
+                </div>
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="section-pad">
+        <div className="site-container grid gap-12 lg:grid-cols-[.85fr_1.15fr] lg:items-center">
+          <div className="about-mark reveal"><img src="/jankech-web-logo.png" alt="Jankech Web" loading="lazy" width={768} height={768} /></div>
+          <div className="reveal">
+            <p className="eyebrow">{t.aboutTag}</p>
+            <h2 className="mt-6 text-4xl font-bold leading-tight md:text-6xl">{t.aboutTitle}</h2>
+            <p className="mt-7 text-lg leading-relaxed text-muted-foreground md:text-xl">{t.aboutText}</p>
+            <div className="mt-8 flex flex-wrap gap-3">{t.aboutPoints.map((point) => <span key={point} className="about-pill"><Check />{point}</span>)}</div>
+          </div>
+        </div>
+      </section>
+
       <section id="contact" className="section-pad border-t border-border">
         <div className="site-container grid gap-14 lg:grid-cols-[.8fr_1.2fr]">
           <div className="reveal lg:sticky lg:top-32 lg:self-start">
@@ -416,6 +448,7 @@ export function PortfolioPage() {
             <p className="mt-6 max-w-xl text-lg leading-relaxed text-muted-foreground">{t.contactText}</p>
             <div className="mt-10 space-y-4">
               <a href="mailto:jankechbusiness@gmail.com" onClick={(event) => { event.preventDefault(); runLogoTransition(() => { window.location.href = "mailto:jankechbusiness@gmail.com"; }); }} className="contact-link"><MessageSquareMore />jankechbusiness@gmail.com</a>
+              <a href="" className="contact-link"><BriefcaseBusiness /></a>
             </div>
           </div>
           <div className="contact-form-wrap reveal">
@@ -434,6 +467,77 @@ export function PortfolioPage() {
                 <label className="form-field sm:col-span-2"><span>{t.form.brief} *</span><textarea name="brief" rows={5} aria-invalid={Boolean(errors["brief"])} />{errors["brief"] && <small>{errors["brief"]}</small>}</label>
                 <div className="sm:col-span-2"><Button type="submit" className="h-14 w-full rounded-full text-base">{t.form.submit}<ArrowUpRight /></Button></div>
               </form>
+              <form
+  action="https://formspree.io/f/xnpnpbzn"
+  method="POST"
+  className="grid gap-6 sm:grid-cols-2"
+>
+  <input
+    type="hidden"
+    name="_subject"
+    value="Nová poptávka z jankech.cz"
+  />
+
+  <Field
+    label={t.form.name}
+    name="name"
+    required
+    error={errors["name"]}
+  />
+
+  <Field
+    label={t.form.email}
+    name="email"
+    type="email"
+    required
+    error={errors["email"]}
+  />
+
+  <Field
+    label={t.form.phone}
+    name="phone"
+    type="tel"
+  />
+
+  <Field
+    label={t.form.industry}
+    name="industry"
+    required
+    error={errors["industry"]}
+  />
+
+  <Field
+    label={t.form.website}
+    name="website"
+    type="url"
+    error={errors["website"]}
+    className="sm:col-span-2"
+    placeholder="https://"
+  />
+
+  <label className="form-field sm:col-span-2">
+    <span>{t.form.brief} *</span>
+
+    <textarea
+      name="brief"
+      rows={5}
+      required
+      aria-invalid={Boolean(errors["brief"])}
+    />
+
+    {errors["brief"] && <small>{errors["brief"]}</small>}
+  </label>
+
+  <div className="sm:col-span-2">
+    <Button
+      type="submit"
+      className="h-14 w-full rounded-full bg-primary-foreground text-base text-primary hover:bg-primary-foreground/90"
+    >
+      {t.form.submit}
+      <ArrowUpRight />
+    </Button>
+  </div>
+</form>
             )}
           </div>
         </div>
@@ -443,6 +547,8 @@ export function PortfolioPage() {
         <div className="site-container grid grid-cols-[minmax(0,1fr)_auto] items-end gap-8">
           <div><div className="flex items-center gap-3"><img src={logoAsset.url} alt="" className="h-10 w-10 rounded-full" width={40} height={40} /><span className="font-bold">Oliver Jankech</span></div><p className="mt-4 text-sm text-muted-foreground">{t.footerText}</p></div>
           <p className="text-right text-xs text-muted-foreground">© 2026 Oliver Jankech<br />{t.rights}</p>
+          <div><div className="flex items-center gap-3"><img src="/jankech-web-logo.png" alt="" className="h-10 w-10 rounded-full" width={40} height={40} /><span className="font-bold">Jankech Web</span></div><p className="mt-4 text-sm text-muted-foreground">{t.footerText}</p></div>
+          <p className="text-right text-xs text-muted-foreground">© 2026 Jankech Web<br />{t.rights}</p>
         </div>
       </footer>
 

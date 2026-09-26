@@ -1,0 +1,524 @@
+<!doctype html>
+<html lang="cs">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="Jankech Web — studentské portfolio web designu a digitálních projektů." />
+  <meta name="theme-color" content="#f8f9fb" />
+  <title>Jankech Web — student web designer</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #fbfcfe;
+      --text: #151923;
+      --muted: #697386;
+      --line: #e2e6ee;
+      --soft: #f1f4f9;
+      --primary: #4058e8;
+      --primary-soft: #edf0ff;
+      --white: #ffffff;
+      --radius: 18px;
+      --max: 1312px;
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      font-family: "Manrope", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: var(--text);
+      background: var(--bg);
+      -webkit-font-smoothing: antialiased;
+    }
+    a { color: inherit; text-decoration: none; }
+    button, input, textarea { font: inherit; }
+    img { max-width: 100%; display: block; }
+
+    .container { width: min(calc(100% - 40px), var(--max)); margin-inline: auto; }
+    .section { padding: clamp(76px, 9vw, 128px) 0; }
+    .border-top { border-top: 1px solid var(--line); }
+    .border-y { border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+    .eyebrow {
+      margin: 0;
+      color: var(--primary);
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      font-size: 12px;
+    }
+    .section-title {
+      margin: 18px 0 0;
+      max-width: 840px;
+      font-size: clamp(38px, 5.4vw, 74px);
+      line-height: 1.02;
+      letter-spacing: -.055em;
+    }
+    .lead {
+      color: var(--muted);
+      font-size: clamp(17px, 2vw, 21px);
+      line-height: 1.7;
+    }
+
+    .site-header {
+      position: fixed;
+      inset: 0 0 auto;
+      z-index: 50;
+      height: 80px;
+      border-bottom: 1px solid rgba(226,230,238,.86);
+      background: rgba(251,252,254,.9);
+      backdrop-filter: blur(16px);
+    }
+    .header-inner {
+      height: 100%;
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      align-items: center;
+      gap: 24px;
+    }
+    .brand { display: flex; align-items: center; gap: 12px; font-weight: 800; }
+    .brand-mark {
+      width: 44px; height: 44px; border-radius: 50%;
+      display: grid; place-items: center; overflow: hidden;
+      color: #fff; background: #0e1015;
+      font-size: 13px; letter-spacing: -.05em;
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,.08);
+    }
+    .brand-mark img { width: 100%; height: 100%; object-fit: cover; }
+    .brand-fallback { display: none; }
+    .brand span span { color: var(--primary); }
+    nav { display: flex; justify-content: center; gap: 28px; }
+    nav a { font-size: 13px; font-weight: 700; color: var(--muted); transition: .2s ease; }
+    nav a:hover { color: var(--primary); }
+    .header-actions { display: flex; align-items: center; gap: 9px; }
+    .lang {
+      display: flex; border: 1px solid var(--line); border-radius: 999px; padding: 3px;
+    }
+    .lang button {
+      border: 0; background: transparent; padding: 7px 10px; border-radius: 999px;
+      font-size: 11px; font-weight: 800; color: var(--muted); cursor: pointer;
+    }
+    .lang button.active { background: var(--text); color: white; }
+    .button {
+      display: inline-flex; align-items: center; justify-content: center; gap: 10px;
+      min-height: 48px; padding: 0 22px; border-radius: 999px;
+      font-weight: 800; font-size: 14px; border: 1px solid transparent; cursor: pointer;
+      transition: transform .2s ease, background .2s ease, border-color .2s ease;
+    }
+    .button:hover { transform: translateY(-2px); }
+    .button-primary { color: white; background: var(--primary); }
+    .button-secondary { border-color: var(--line); background: rgba(255,255,255,.8); }
+    .mobile-toggle { display: none; }
+
+    .hero {
+      position: relative;
+      overflow: hidden;
+      min-height: 96svh;
+      display: grid;
+      align-items: center;
+      padding: 135px 0 76px;
+    }
+    .hero::before {
+      content: "";
+      position: absolute;
+      width: 720px; height: 720px; border-radius: 50%;
+      top: 6%; left: 50%; transform: translateX(-50%);
+      background: radial-gradient(circle, rgba(64,88,232,.12), rgba(64,88,232,0) 68%);
+      pointer-events: none;
+    }
+    .waves {
+      position: absolute; inset: 0; opacity: .17; pointer-events: none;
+    }
+    .waves svg { width: 100%; height: 100%; }
+    .waves path { fill: none; stroke: #4058e8; stroke-width: 1.3; }
+    .hero-inner { position: relative; z-index: 2; text-align: center; }
+    .preview-badge {
+      display: inline-flex; align-items: center; gap: 8px; margin-bottom: 26px;
+      padding: 8px 12px; border: 1px solid var(--line); border-radius: 999px;
+      background: rgba(255,255,255,.7); color: var(--muted); font-size: 12px; font-weight: 700;
+    }
+    .preview-badge::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: var(--primary); }
+    h1 {
+      margin: 0 auto;
+      max-width: 1000px;
+      font-size: clamp(59px, 9.8vw, 132px);
+      line-height: .86;
+      letter-spacing: -.075em;
+      font-weight: 800;
+    }
+    .hero .lead { max-width: 720px; margin: 30px auto 0; }
+    .hero-actions { margin-top: 34px; display: flex; justify-content: center; flex-wrap: wrap; gap: 12px; }
+    .hero-note { margin-top: 26px; color: #8a93a3; font-size: 12px; }
+
+    .project-grid { margin-top: 54px; display: grid; grid-template-columns: 1fr 1fr; gap: 28px; }
+    .project-card { min-width: 0; }
+    .project-visual {
+      position: relative; aspect-ratio: 7 / 5; overflow: hidden; border-radius: var(--radius);
+      border: 1px solid var(--line); background: #e9edf6;
+      box-shadow: 0 25px 65px rgba(20,30,55,.08);
+    }
+    .mockup { position: absolute; inset: 0; padding: 7%; }
+    .mock-browser {
+      height: 100%; border-radius: 14px; overflow: hidden; background: white;
+      border: 1px solid rgba(15,20,30,.12); box-shadow: 0 24px 50px rgba(0,0,0,.12);
+    }
+    .browser-bar { height: 9%; display: flex; align-items: center; gap: 5px; padding: 0 12px; border-bottom: 1px solid #eceef2; }
+    .browser-bar i { width: 6px; height: 6px; border-radius: 50%; background: #d3d7df; }
+    .mock-content { height: 91%; display: grid; grid-template-columns: 1fr 1fr; }
+    .mock-copy { padding: 10% 11%; }
+    .mock-kicker { width: 34%; height: 5px; background: #20242e; opacity: .25; border-radius: 99px; }
+    .mock-title { margin-top: 18px; width: 86%; height: 22%; background: #12151c; border-radius: 7px; }
+    .mock-line { margin-top: 13px; height: 6px; background: #dfe3e9; border-radius: 99px; }
+    .mock-line.short { width: 68%; }
+    .mock-btn { margin-top: 22px; width: 80px; height: 25px; border-radius: 999px; background: var(--primary); }
+    .mock-image { position: relative; overflow: hidden; }
+    .mock-image::before, .mock-image::after { content:""; position:absolute; border-radius: 50%; }
+    .stylist { background: linear-gradient(135deg, #e7ded4, #bba99a 52%, #6e5949); }
+    .stylist::before { width: 68%; height: 85%; right: -5%; bottom: -18%; background: #eae0d6; }
+    .stylist::after { width: 25%; height: 55%; right: 28%; top: 18%; background: #766052; transform: rotate(18deg); border-radius: 45% 45% 15% 15%; }
+    .painter { background: linear-gradient(135deg, #eaf2fb, #c9ddf4); }
+    .painter::before { width: 48%; height: 72%; right: 23%; bottom: -12%; background: #1e6cc8; border-radius: 48% 48% 8% 8%; }
+    .painter::after { width: 20%; height: 20%; right: 38%; top: 18%; background: #2f68a7; }
+    .project-badge {
+      position: absolute; top: 16px; left: 16px; z-index: 2;
+      padding: 7px 10px; border-radius: 999px; background: rgba(255,255,255,.88);
+      backdrop-filter: blur(8px); font-size: 10px; font-weight: 800; text-transform: uppercase;
+    }
+    .project-meta { margin: 22px 0 9px; color: var(--primary); font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: .06em; }
+    .project-card h3 { margin: 0; font-size: clamp(24px, 3vw, 34px); letter-spacing: -.035em; }
+    .project-card p { color: var(--muted); line-height: 1.7; }
+
+    .about-grid { display: grid; grid-template-columns: .78fr 1.22fr; gap: clamp(40px, 7vw, 100px); align-items: center; }
+    .profile-card {
+      min-height: 470px; border-radius: 28px; padding: 34px; position: relative; overflow: hidden;
+      background: #11141b; color: white;
+    }
+    .profile-card::before {
+      content:""; position:absolute; width: 380px; height: 380px; border-radius: 50%;
+      left: -120px; bottom: -170px; background: #4058e8;
+      filter: blur(2px); opacity: .85;
+    }
+    .profile-card::after {
+      content:""; position:absolute; width: 210px; height: 210px; border-radius: 50%;
+      right: -60px; top: -40px; border: 1px solid rgba(255,255,255,.25);
+    }
+    .profile-label { position: relative; z-index: 2; font-size: 12px; font-weight: 800; text-transform: uppercase; color: #adb6ca; }
+    .profile-initials {
+      position:absolute; inset: 0; display:grid; place-items:center; font-size: clamp(92px, 13vw, 170px);
+      font-weight: 800; letter-spacing: -.09em; color: white; z-index: 1;
+    }
+    .profile-bottom { position:absolute; left:34px; right:34px; bottom:30px; z-index:2; display:flex; justify-content:space-between; gap:20px; align-items:end; }
+    .profile-bottom strong { font-size: 20px; }
+    .profile-bottom span { color:#b3bbca; font-size:13px; text-align:right; }
+    .about-copy .lead { margin: 26px 0 0; max-width: 720px; }
+    .pills { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 28px; }
+    .pill { padding: 10px 14px; border: 1px solid var(--line); border-radius: 999px; background: white; font-size: 12px; font-weight: 700; }
+
+    .skills { margin-top: 56px; border-top: 1px solid var(--line); }
+    .skill-row {
+      display: grid; grid-template-columns: 52px minmax(0, 1fr) minmax(260px, .8fr) 28px;
+      gap: 18px; align-items: center; padding: 27px 0; border-bottom: 1px solid var(--line);
+      transition: padding .25s ease, color .25s ease;
+    }
+    .skill-row:hover { padding-left: 10px; padding-right: 10px; color: var(--primary); }
+    .skill-no { font-size: 11px; font-weight: 800; color: #9aa3b1; }
+    .skill-row h3 { margin: 0; font-size: clamp(22px, 2.4vw, 31px); }
+    .skill-row p { margin: 0; color: var(--muted); line-height: 1.55; font-size: 14px; }
+    .arrow { font-size: 22px; }
+
+    .process-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; margin-top: 54px; background: var(--line); border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden; }
+    .step { background: var(--bg); min-height: 290px; padding: 30px; position: relative; }
+    .step-no { font-size: 11px; font-weight: 800; color: var(--primary); }
+    .step h3 { margin: 92px 0 12px; font-size: 25px; letter-spacing: -.03em; }
+    .step p { margin: 0; color: var(--muted); line-height: 1.65; font-size: 14px; }
+
+    .tools-panel {
+      display:grid; grid-template-columns: .8fr 1.2fr; gap: 50px; padding: clamp(34px, 6vw, 72px);
+      background: #11141b; border-radius: 28px; color: white;
+    }
+    .tools-panel .eyebrow { color: #9fadff; }
+    .tools-panel h2 { margin: 18px 0 0; font-size: clamp(36px, 5vw, 66px); line-height: 1.02; letter-spacing: -.05em; }
+    .tools-panel p { color: #aeb7c8; line-height: 1.7; }
+    .tool-list { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .tool { padding: 18px; border: 1px solid rgba(255,255,255,.12); border-radius: 14px; background: rgba(255,255,255,.04); }
+    .tool strong { display:block; margin-bottom:6px; }
+    .tool span { font-size: 12px; color: #9ea8bb; }
+
+    .contact-grid { display: grid; grid-template-columns: .8fr 1.2fr; gap: clamp(46px, 7vw, 100px); }
+    .contact-copy { align-self: start; position: sticky; top: 120px; }
+    .contact-copy .lead { margin-top: 24px; }
+    .contact-email { display: inline-block; margin-top: 22px; padding-bottom: 3px; border-bottom: 1px solid var(--text); font-weight: 800; }
+    form { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+    .field { display: grid; gap: 8px; }
+    .field.full { grid-column: 1 / -1; }
+    label { font-size: 12px; font-weight: 800; }
+    input, textarea {
+      width: 100%; border: 1px solid var(--line); background: white; color: var(--text);
+      border-radius: 13px; padding: 15px 16px; outline: none; transition: border .2s ease, box-shadow .2s ease;
+    }
+    input:focus, textarea:focus { border-color: var(--primary); box-shadow: 0 0 0 4px rgba(64,88,232,.1); }
+    textarea { min-height: 155px; resize: vertical; }
+    .form-footer { grid-column: 1 / -1; display:flex; gap:15px; align-items:center; flex-wrap:wrap; }
+    .form-status { font-size: 13px; color: var(--muted); }
+    .form-status.success { color: #16774a; }
+    .form-status.error { color: #b42318; }
+
+    footer { padding: 38px 0; border-top: 1px solid var(--line); }
+    .footer-inner { display:flex; justify-content:space-between; gap:24px; color: var(--muted); font-size: 12px; }
+
+    .reveal { opacity: 0; transform: translateY(20px); transition: opacity .65s ease, transform .65s ease; }
+    .reveal.visible { opacity: 1; transform: none; }
+
+    @media (max-width: 980px) {
+      nav, .header-cta { display: none; }
+      .header-inner { grid-template-columns: 1fr auto; }
+      .project-grid, .about-grid, .tools-panel, .contact-grid { grid-template-columns: 1fr; }
+      .project-grid { gap: 50px; }
+      .profile-card { min-height: 390px; }
+      .process-grid { grid-template-columns: 1fr; }
+      .step { min-height: 230px; }
+      .step h3 { margin-top: 62px; }
+      .contact-copy { position: static; }
+    }
+    @media (max-width: 700px) {
+      .container { width: min(calc(100% - 28px), var(--max)); }
+      .site-header { height: 70px; }
+      .brand span { font-size: 14px; }
+      .brand-mark { width: 38px; height: 38px; }
+      .lang button { padding: 6px 8px; }
+      h1 { font-size: clamp(56px, 18vw, 88px); }
+      .hero { padding-top: 110px; }
+      .skill-row { grid-template-columns: 35px 1fr 20px; }
+      .skill-row p { display: none; }
+      .tools-panel { padding: 28px; }
+      .tool-list { grid-template-columns: 1fr; }
+      form { grid-template-columns: 1fr; }
+      .field.full, .form-footer { grid-column: auto; }
+      .footer-inner { flex-direction: column; }
+    }
+  </style>
+</head>
+<body>
+  <header class="site-header">
+    <div class="container header-inner">
+      <a href="#top" class="brand" aria-label="Jankech Web — domů">
+        <span class="brand-mark"><img src="/jankech-web-logo.png" alt="" onerror="this.style.display='none';this.nextElementSibling.style.display='block'" /><span class="brand-fallback">JK</span></span>
+        <span>Jankech <span>Web</span></span>
+      </a>
+      <nav aria-label="Hlavní navigace">
+        <a href="#projects" data-cz="Projekty" data-en="Projects">Projekty</a>
+        <a href="#about" data-cz="O mně" data-en="About">O mně</a>
+        <a href="#skills" data-cz="Co umím" data-en="What I do">Co umím</a>
+        <a href="#process" data-cz="Jak pracuji" data-en="How I work">Jak pracuji</a>
+        <a href="#contact" data-cz="Kontakt" data-en="Contact">Kontakt</a>
+      </nav>
+      <div class="header-actions">
+        <div class="lang" aria-label="Jazyk">
+          <button type="button" class="active" data-lang="cz">CZ</button>
+          <button type="button" data-lang="en">EN</button>
+        </div>
+        <a href="#contact" class="button button-primary header-cta" data-cz="Napsat mi" data-en="Get in touch">Napsat mi</a>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section id="top" class="hero">
+      <div class="waves" aria-hidden="true">
+        <svg viewBox="0 0 1440 900" preserveAspectRatio="none">
+          <path d="M-150 180 C180 30 350 350 700 180 C1040 20 1220 310 1590 100"/>
+          <path d="M-120 390 C180 180 430 510 760 330 C1090 150 1310 520 1590 280"/>
+          <path d="M-100 640 C200 410 470 760 820 540 C1130 350 1360 730 1580 500"/>
+        </svg>
+      </div>
+      <div class="container hero-inner">
+        <div class="preview-badge" data-cz="Návrh V2 · studentské portfolio" data-en="V2 concept · student portfolio">Návrh V2 · studentské portfolio</div>
+        <p class="eyebrow" data-cz="Student · web design · AI" data-en="Student · web design · AI">Student · web design · AI</p>
+        <h1 data-cz="Tvořím weby. Učím se za pochodu." data-en="I build websites. I learn by doing.">Tvořím weby. Učím se za pochodu.</h1>
+        <p class="lead" data-cz="Jsem Oliver, student, kterého baví webdesign, technologie a AI. Stavím jednoduché moderní weby, zkouším nové nástroje a s každým projektem se učím něco dalšího." data-en="I'm Jan, a student interested in web design, technology and AI. I build simple modern websites, experiment with new tools, and learn something new with every project.">
+          Jsem Oliver, student, kterého baví webdesign, technologie a AI. Stavím jednoduché moderní weby, zkouším nové nástroje a s každým projektem se učím něco dalšího.
+        </p>
+        <div class="hero-actions">
+          <a class="button button-primary" href="#projects" data-cz="Moje projekty ↓" data-en="My projects ↓">Moje projekty ↓</a>
+          <a class="button button-secondary" href="#about" data-cz="O mně" data-en="About me">O mně</a>
+        </div>
+        <div class="hero-note" data-cz="Bez velkých slibů. Raději ukazuji, co jsem vytvořil." data-en="No big promises. I'd rather show what I've built.">Bez velkých slibů. Raději ukazuji, co jsem vytvořil.</div>
+      </div>
+    </section>
+
+    <section id="projects" class="section border-y">
+      <div class="container">
+        <p class="eyebrow reveal" data-cz="Vybrané projekty" data-en="Selected projects">Vybrané projekty</p>
+        <h2 class="section-title reveal" data-cz="Nejdřív práce. Potom řeči." data-en="Work first. Talk second.">Nejdřív práce. Potom řeči.</h2>
+        <div class="project-grid">
+          <article class="project-card reveal">
+            <div class="project-visual">
+              <span class="project-badge" data-cz="Ukázkový koncept" data-en="Concept project">Ukázkový koncept</span>
+              <div class="mockup">
+                <div class="mock-browser">
+                  <div class="browser-bar"><i></i><i></i><i></i></div>
+                  <div class="mock-content">
+                    <div class="mock-copy"><div class="mock-kicker"></div><div class="mock-title"></div><div class="mock-line"></div><div class="mock-line short"></div><div class="mock-btn"></div></div>
+                    <div class="mock-image stylist"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="project-meta" data-cz="Web design · responzivní návrh" data-en="Web design · responsive concept">Web design · responzivní návrh</div>
+            <h3 data-cz="Web pro osobní stylistku" data-en="Website for a personal stylist">Web pro osobní stylistku</h3>
+            <p data-cz="Čistý vizuální koncept zaměřený na jednoduchou orientaci, důvěru a jasnou cestu ke kontaktu." data-en="A clean visual concept focused on easy navigation, trust and a clear path to contact.">Čistý vizuální koncept zaměřený na jednoduchou orientaci, důvěru a jasnou cestu ke kontaktu.</p>
+          </article>
+          <article class="project-card reveal">
+            <div class="project-visual">
+              <span class="project-badge" data-cz="Ukázkový koncept" data-en="Concept project">Ukázkový koncept</span>
+              <div class="mockup">
+                <div class="mock-browser">
+                  <div class="browser-bar"><i></i><i></i><i></i></div>
+                  <div class="mock-content">
+                    <div class="mock-copy"><div class="mock-kicker"></div><div class="mock-title"></div><div class="mock-line"></div><div class="mock-line short"></div><div class="mock-btn"></div></div>
+                    <div class="mock-image painter"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="project-meta" data-cz="Web design · lokální služby" data-en="Web design · local services">Web design · lokální služby</div>
+            <h3 data-cz="Web pro malířskou firmu" data-en="Website for a painting company">Web pro malířskou firmu</h3>
+            <p data-cz="Jednoduchý koncept pro lokální firmu: jasné služby, ukázky práce a rychlý kontakt bez zbytečné složitosti." data-en="A simple concept for a local business: clear services, examples of work and quick contact without unnecessary complexity.">Jednoduchý koncept pro lokální firmu: jasné služby, ukázky práce a rychlý kontakt bez zbytečné složitosti.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="about" class="section">
+      <div class="container about-grid">
+        <div class="profile-card reveal" aria-label="Profil OJ">
+          <span class="profile-label" data-cz="Osobní profil" data-en="Personal profile">Osobní profil</span>
+          <div class="profile-initials">JK</div>
+          <div class="profile-bottom"><strong>OJ</strong><span data-cz="student gymnázia v Praze · kvinta" data-en="grammar school student in Prague · year 5">student gymnázia v Praze · kvinta</span></div>
+        </div>
+        <div class="about-copy reveal">
+          <p class="eyebrow" data-cz="O mně" data-en="About me">O mně</p>
+          <h2 class="section-title" data-cz="Jsem student. Tohle je místo, kde se učím veřejně." data-en="I'm a student. This is where I learn in public.">Jsem student. Tohle je místo, kde se učím veřejně.</h2>
+          <p class="lead" data-cz="Baví mě kombinovat design, technologie a nové AI nástroje. Weby jsem začal tvořit jako vlastní projekty a postupně zkouším, jak z nápadu udělat funkční stránku, kterou lze opravdu zveřejnit. Nehraju si na velké studio — důležitější je pro mě učit se, dělat věci poctivě a ukazovat skutečnou práci." data-en="I enjoy combining design, technology and new AI tools. I started building websites as personal projects and I'm gradually learning how to turn an idea into a working site that can actually be published. I'm not pretending to be a big studio — learning, doing things properly and showing real work matter more to me.">
+            Baví mě kombinovat design, technologie a nové AI nástroje. Weby jsem začal tvořit jako vlastní projekty a postupně zkouším, jak z nápadu udělat funkční stránku, kterou lze opravdu zveřejnit. Nehraju si na velké studio — důležitější je pro mě učit se, dělat věci poctivě a ukazovat skutečnou práci.
+          </p>
+          <div class="pills">
+            <span class="pill" data-cz="Web design" data-en="Web design">Web design</span>
+            <span class="pill" data-cz="AI" data-en="AI">AI</span>
+            <span class="pill" data-cz="Digitální projekty" data-en="Digital projects">Digitální projekty</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="skills" class="section border-y">
+      <div class="container">
+        <p class="eyebrow reveal" data-cz="Co umím vytvořit" data-en="What I can build">Co umím vytvořit</p>
+        <h2 class="section-title reveal" data-cz="Jednoduše. Moderně. Bez zbytečností." data-en="Simple. Modern. No unnecessary complexity.">Jednoduše. Moderně. Bez zbytečností.</h2>
+        <div class="skills">
+          <div class="skill-row reveal"><span class="skill-no">01</span><h3 data-cz="Jednoduché weby" data-en="Simple websites">Jednoduché weby</h3><p data-cz="Osobní weby, menší firemní prezentace a landing pages." data-en="Personal websites, small business sites and landing pages.">Osobní weby, menší firemní prezentace a landing pages.</p><span class="arrow">↗</span></div>
+          <div class="skill-row reveal"><span class="skill-no">02</span><h3 data-cz="Redesign" data-en="Redesign">Redesign</h3><p data-cz="Zjednodušení starší stránky, lepší struktura a modernější vzhled." data-en="Simplifying older sites with clearer structure and a more modern look.">Zjednodušení starší stránky, lepší struktura a modernější vzhled.</p><span class="arrow">↗</span></div>
+          <div class="skill-row reveal"><span class="skill-no">03</span><h3 data-cz="Formuláře a propojení" data-en="Forms & integrations">Formuláře a propojení</h3><p data-cz="Kontaktní formuláře a jednoduchá propojení s online nástroji." data-en="Contact forms and simple integrations with online tools.">Kontaktní formuláře a jednoduchá propojení s online nástroji.</p><span class="arrow">↗</span></div>
+          <div class="skill-row reveal"><span class="skill-no">04</span><h3 data-cz="Základy SEO a AI" data-en="SEO basics & AI">Základy SEO a AI</h3><p data-cz="Srozumitelný obsah, technické základy a chytré využití AI při tvorbě." data-en="Clear content, technical basics and practical use of AI during creation.">Srozumitelný obsah, technické základy a chytré využití AI při tvorbě.</p><span class="arrow">↗</span></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="process" class="section">
+      <div class="container">
+        <p class="eyebrow reveal" data-cz="Jak pracuji" data-en="How I work">Jak pracuji</p>
+        <h2 class="section-title reveal" data-cz="Tři kroky stačí." data-en="Three steps are enough.">Tři kroky stačí.</h2>
+        <div class="process-grid">
+          <article class="step reveal"><span class="step-no">01</span><h3 data-cz="Pochopit zadání" data-en="Understand the brief">Pochopit zadání</h3><p data-cz="Nejdřív si ujasníme, komu web slouží, co má říct a co má návštěvník udělat." data-en="First we clarify who the site is for, what it should say and what visitors should do.">Nejdřív si ujasníme, komu web slouží, co má říct a co má návštěvník udělat.</p></article>
+          <article class="step reveal"><span class="step-no">02</span><h3 data-cz="Postavit návrh" data-en="Build the concept">Postavit návrh</h3><p data-cz="Připravím funkční návrh a ukážu ho co nejdříve, aby šlo pracovat s konkrétní verzí." data-en="I prepare a working concept early so we can react to something concrete.">Připravím funkční návrh a ukážu ho co nejdříve, aby šlo pracovat s konkrétní verzí.</p></article>
+          <article class="step reveal"><span class="step-no">03</span><h3 data-cz="Doladit a zveřejnit" data-en="Refine & publish">Doladit a zveřejnit</h3><p data-cz="Upravíme detaily, zkontrolujeme mobil a web může jít ven." data-en="We refine the details, check mobile and the site can go live.">Upravíme detaily, zkontrolujeme mobil a web může jít ven.</p></article>
+        </div>
+      </div>
+    </section>
+
+    <section id="contact" class="section border-top">
+      <div class="container contact-grid">
+        <div class="contact-copy reveal">
+          <p class="eyebrow" data-cz="Kontakt" data-en="Contact">Kontakt</p>
+          <h2 class="section-title" data-cz="Máte nápad na jednoduchý web?" data-en="Have an idea for a simple website?">Máte nápad na jednoduchý web?</h2>
+          <p class="lead" data-cz="Napište mi pár vět. Pokud dává projekt smysl a zvládnu ho, ozvu se s návrhem dalšího kroku." data-en="Send me a few lines. If the project makes sense and I can take it on, I'll reply with a suggested next step.">Napište mi pár vět. Pokud dává projekt smysl a zvládnu ho, ozvu se s návrhem dalšího kroku.</p>
+          <a class="contact-email" href="mailto:jankechbusiness@gmail.com">jankechbusiness@gmail.com</a>
+        </div>
+
+        <form id="contact-form" action="https://formspree.io/f/xnpnpbzn" method="POST" class="reveal">
+          <input type="hidden" name="_subject" value="Nová zpráva z jankech.cz" />
+          <div class="field"><label for="name" data-cz="Jméno *" data-en="Name *">Jméno *</label><input id="name" name="name" required autocomplete="name" /></div>
+          <div class="field"><label for="email" data-cz="E-mail *" data-en="Email *">E-mail *</label><input id="email" type="email" name="email" required autocomplete="email" /></div>
+          <div class="field full"><label for="website" data-cz="Web / projekt (volitelné)" data-en="Website / project (optional)">Web / projekt (volitelné)</label><input id="website" name="website" type="url" placeholder="https://" /></div>
+          <div class="field full"><label for="message" data-cz="Co potřebujete? *" data-en="What do you need? *">Co potřebujete? *</label><textarea id="message" name="brief" required></textarea></div>
+          <div class="form-footer">
+            <button class="button button-primary" type="submit" data-cz="Odeslat zprávu ↗" data-en="Send message ↗">Odeslat zprávu ↗</button>
+            <span id="form-status" class="form-status" aria-live="polite"></span>
+          </div>
+        </form>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container footer-inner">
+      <span>© 2026 Jankech Web</span>
+      <span data-cz="Studentské portfolio" data-en="Student portfolio">Studentské portfolio</span>
+    </div>
+  </footer>
+
+  <script>
+    const languageButtons = document.querySelectorAll('[data-lang]');
+    const translatable = document.querySelectorAll('[data-cz][data-en]');
+    let language = 'cz';
+
+    function setLanguage(next) {
+      language = next;
+      document.documentElement.lang = next === 'cz' ? 'cs' : 'en';
+      translatable.forEach(el => {
+        el.textContent = el.dataset[next];
+      });
+      languageButtons.forEach(btn => btn.classList.toggle('active', btn.dataset.lang === next));
+      document.title = next === 'cz' ? 'Jankech Web — student web designer' : 'Jankech Web — student web designer';
+    }
+    languageButtons.forEach(btn => btn.addEventListener('click', () => setLanguage(btn.dataset.lang)));
+
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: .12 });
+    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+    const form = document.getElementById('contact-form');
+    const status = document.getElementById('form-status');
+    form.addEventListener('submit', async (event) => {
+      event.preventDefault();
+      status.className = 'form-status';
+      status.textContent = language === 'cz' ? 'Odesílám…' : 'Sending…';
+      const button = form.querySelector('button[type="submit"]');
+      button.disabled = true;
+      try {
+        const response = await fetch(form.action, {
+          method: 'POST',
+          body: new FormData(form),
+          headers: { 'Accept': 'application/json' }
+        });
+        if (!response.ok) throw new Error('Form submit failed');
+        form.reset();
+        status.className = 'form-status success';
+        status.textContent = language === 'cz' ? 'Děkuji. Zpráva byla odeslána.' : 'Thank you. Your message was sent.';
+      } catch (error) {
+        status.className = 'form-status error';
+        status.textContent = language === 'cz' ? 'Odeslání se nepodařilo. Zkuste to prosím znovu.' : 'Could not send the message. Please try again.';
+      } finally {
+        button.disabled = false;
+      }
+    });
+  </script>
+</body>
+</html>
