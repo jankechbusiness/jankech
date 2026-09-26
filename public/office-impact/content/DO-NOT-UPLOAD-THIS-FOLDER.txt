@@ -1,2 +1,0 @@
-This patch intentionally does not include posts.json, events.json or people.json.
-Keep the existing content files in your repository.
